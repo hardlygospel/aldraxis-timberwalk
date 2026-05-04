@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Circle of Spores Wood Elf Druid — Aldraxis Timberwalk</title>
+<title>Aldraxis Timberwalk — Circle of Spores Druid</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
   :root {
@@ -23,8 +23,10 @@
     --amber:      #d4a574;
     --rot:        #d97a7a;
     --ok:         #95cb86;
+    --nav-h:      52px;
   }
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   html, body { margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -51,6 +53,7 @@
     padding-bottom: 0.4rem;
     border-bottom: 1px solid var(--border);
     display: flex; align-items: center; gap: 0.7rem;
+    scroll-margin-top: calc(var(--nav-h) + 1.5rem);
   }
   h2 .glyph {
     color: var(--spore);
@@ -60,58 +63,107 @@
   h3 { font-size: 1.15rem; margin: 1.5rem 0 0.5rem; color: var(--leaf-soft); }
   p { margin: 0 0 1rem; }
   .mono { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace; }
+  section { scroll-margin-top: calc(var(--nav-h) + 1.5rem); }
 
-  /* ── HERO ─────────────────────────────────────────────────────────────── */
+  /* ── STICKY NAV ────────────────────────────────────────────────── */
+  .topnav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,22,18,0.93);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    height: var(--nav-h);
+    display: flex; align-items: center;
+    padding: 0 1.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .topnav::-webkit-scrollbar { display: none; }
+  .topnav a {
+    color: var(--moss-dim); border: none;
+    font-family: ui-monospace, monospace;
+    font-size: 0.7rem; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0 0.85rem;
+    height: var(--nav-h);
+    display: flex; align-items: center;
+    white-space: nowrap;
+    transition: color 0.15s;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    flex-shrink: 0;
+  }
+  .topnav a:hover, .topnav a.active { color: var(--spore-glow); border-bottom-color: var(--spore); }
+  .topnav .nav-brand {
+    color: var(--leaf-soft); font-weight: 600;
+    padding-right: 1.25rem; margin-right: 0.25rem;
+    border-right: 1px solid var(--border-soft);
+    font-size: 0.78rem; letter-spacing: 0.04em;
+    flex-shrink: 0; white-space: nowrap;
+    border-bottom: none; height: auto;
+  }
+
+  /* ── HERO ──────────────────────────────────────────────────────── */
   .hero {
     text-align: center;
-    padding: 2rem 0 1.5rem;
+    padding: 2.5rem 0 2rem;
     border-bottom: 1px solid var(--border);
     margin-bottom: 1.5rem;
-    position: relative;
+    position: relative; overflow: hidden;
   }
   .hero::before {
     content: "";
     position: absolute; inset: 0; pointer-events: none;
     background:
-      radial-gradient(circle at 20% 30%, rgba(176,139,217,0.10) 0%, transparent 40%),
+      radial-gradient(circle at 20% 30%, rgba(176,139,217,0.13) 0%, transparent 40%),
       radial-gradient(circle at 80% 70%, rgba(143,191,107,0.10) 0%, transparent 40%);
   }
+  .spores { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .spore-dot {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--spore);
+    opacity: 0;
+    animation: floatSpore linear infinite;
+  }
+  @keyframes floatSpore {
+    0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    10%  { opacity: 0.55; }
+    85%  { opacity: 0.15; }
+    100% { transform: translateY(-130px) translateX(var(--drift, 20px)) scale(0.25); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spore-dot { animation: none; opacity: 0.18; }
+  }
   .hero-eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.4em;
-    font-size: 0.72rem;
-    color: var(--spore);
+    text-transform: uppercase; letter-spacing: 0.4em;
+    font-size: 0.72rem; color: var(--spore);
     font-family: ui-monospace, monospace;
     margin-bottom: 0.8rem;
   }
   .hero h1 {
     font-size: 3.2rem;
     background: linear-gradient(90deg, var(--leaf-soft) 0%, var(--moss) 50%, var(--spore-glow) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
+    -webkit-background-clip: text; background-clip: text;
     color: transparent;
-    text-shadow: 0 0 30px rgba(176,139,217,0.15);
   }
-  .hero h2 {
-    border: none; padding: 0; margin: 0.4rem 0 0;
+  .hero-sub {
+    margin: 0.4rem 0 0;
     font-size: 1.05rem; color: var(--moss-dim);
     font-family: ui-monospace, monospace;
     letter-spacing: 0.2em; font-weight: 400;
     text-transform: uppercase;
-    display: block;
   }
   .hero-tags {
     display: flex; justify-content: center; flex-wrap: wrap;
     gap: 8px; margin-top: 1.5rem;
   }
   .tag {
-    font-family: ui-monospace, monospace;
-    font-size: 0.72rem;
+    font-family: ui-monospace, monospace; font-size: 0.72rem;
     padding: 4px 12px; border-radius: 99px;
     border: 1px solid var(--border-soft);
     background: rgba(26,36,30,0.6);
-    color: var(--moss-dim);
-    letter-spacing: 0.1em;
+    color: var(--moss-dim); letter-spacing: 0.1em;
     text-transform: uppercase;
   }
   .tag.spore { color: var(--spore-glow); border-color: var(--spore); }
@@ -119,15 +171,82 @@
   .tag.amber { color: var(--amber);      border-color: var(--amber); }
   .flavor {
     max-width: 720px; margin: 1.8rem auto 0;
-    font-style: italic;
-    color: var(--moss-dim);
-    line-height: 1.7;
+    font-style: italic; color: var(--moss-dim);
+    line-height: 1.75;
     border-left: 2px solid var(--spore);
     padding: 0.5rem 0 0.5rem 1.4rem;
     text-align: left;
   }
 
-  /* ── CARD ─────────────────────────────────────────────────────────────── */
+  /* ── ABILITY SCORES ────────────────────────────────────────────── */
+  .ability-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px; margin: 1rem 0;
+  }
+  @media (max-width: 580px) { .ability-grid { grid-template-columns: repeat(3, 1fr); } }
+  .ability {
+    background: var(--bg-bark);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    text-align: center;
+    padding: 0.9rem 0.4rem 0.75rem;
+  }
+  .ability.hi { border-color: var(--leaf); box-shadow: 0 0 14px rgba(143,191,107,0.1) inset; }
+  .ability .ab-name {
+    font-family: ui-monospace, monospace;
+    font-size: 0.6rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--moss-faint);
+    margin-bottom: 4px;
+  }
+  .ability .ab-score {
+    font-family: "Iowan Old Style", Georgia, serif;
+    font-size: 2rem; font-weight: 600;
+    color: var(--leaf-soft); line-height: 1;
+    margin-bottom: 6px;
+  }
+  .ability .ab-mod {
+    font-family: ui-monospace, monospace; font-size: 0.85rem;
+    color: var(--spore-glow);
+    background: rgba(176,139,217,0.12);
+    border: 1px solid rgba(176,139,217,0.25);
+    border-radius: 99px; padding: 1px 8px;
+    display: inline-block;
+  }
+
+  /* ── SAVES / SKILLS ────────────────────────────────────────────── */
+  .prof-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; margin-top: 1rem;
+  }
+  @media (max-width: 580px) { .prof-grid { grid-template-columns: 1fr; } }
+  .prof-block {
+    background: var(--bg-bark);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.9rem 1rem;
+  }
+  .prof-block h4 {
+    margin: 0 0 0.5rem;
+    font-size: 0.72rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--moss-faint);
+    font-family: ui-monospace, monospace;
+  }
+  .prof-item {
+    display: flex; align-items: center;
+    gap: 8px; padding: 3px 0; font-size: 0.88rem;
+  }
+  .prof-item .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    border: 1.5px solid var(--border-soft); flex-shrink: 0;
+  }
+  .prof-item .dot.p { background: var(--leaf); border-color: var(--leaf); }
+  .prof-item .dot.e { background: var(--spore-glow); border-color: var(--spore); }
+  .prof-item .mod-val {
+    font-family: ui-monospace, monospace;
+    font-size: 0.8rem; color: var(--spore-glow); margin-left: auto;
+  }
+
+  /* ── CARD ──────────────────────────────────────────────────────── */
   .card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -142,68 +261,137 @@
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   @media (max-width: 760px) { .grid-2 { grid-template-columns: 1fr; } }
 
-  /* ── TABLE ────────────────────────────────────────────────────────────── */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1rem 0;
-    font-size: 0.93rem;
-  }
+  /* ── TABLE ─────────────────────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.93rem; }
   th {
-    text-align: left;
-    padding: 0.7rem 0.9rem;
-    background: var(--bg-bark);
-    color: var(--leaf-soft);
-    font-weight: 500;
-    font-family: ui-monospace, monospace;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    border-bottom: 1px solid var(--border-soft);
+    text-align: left; padding: 0.7rem 0.9rem;
+    background: var(--bg-bark); color: var(--leaf-soft);
+    font-weight: 500; font-family: ui-monospace, monospace;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    font-size: 0.75rem; border-bottom: 1px solid var(--border-soft);
   }
   td {
     padding: 0.65rem 0.9rem;
     border-bottom: 1px solid var(--border);
-    color: var(--moss);
-    vertical-align: top;
+    color: var(--moss); vertical-align: top;
   }
   tr:hover td { background: rgba(176,139,217,0.04); }
   tbody tr:last-child td { border-bottom: none; }
   td.lvl, td.center { text-align: center; font-family: ui-monospace, monospace; }
   td.lvl { color: var(--spore-glow); font-weight: 600; }
   td .feat-name { color: var(--leaf-soft); font-weight: 500; }
-  td .spell { color: var(--moss); }
   .always-prep {
-    color: var(--spore-glow);
-    font-weight: 500;
-    border-bottom: 1px dotted var(--spore);
-    cursor: help;
+    color: var(--spore-glow); font-weight: 500;
+    border-bottom: 1px dotted var(--spore); cursor: help;
   }
 
-  /* ── CHIPS / STATS ────────────────────────────────────────────────────── */
-  .stat-row {
-    display: flex; flex-wrap: wrap; gap: 12px;
-    margin: 0.8rem 0;
-  }
+  /* ── STATS ─────────────────────────────────────────────────────── */
+  .stat-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 0.8rem 0; }
   .stat {
-    flex: 1 1 160px;
+    flex: 1 1 155px;
     background: var(--bg-bark);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.7rem 1rem;
+    border-radius: 8px; padding: 0.7rem 1rem;
   }
   .stat .label {
     text-transform: uppercase; letter-spacing: 0.15em;
-    font-size: 0.68rem; color: var(--moss-faint);
-    font-family: ui-monospace, monospace;
-    margin-bottom: 4px;
+    font-size: 0.67rem; color: var(--moss-faint);
+    font-family: ui-monospace, monospace; margin-bottom: 4px;
   }
-  .stat .value {
-    font-family: ui-monospace, monospace;
-    color: var(--leaf-soft); font-size: 1.05rem;
+  .stat .value { font-family: ui-monospace, monospace; color: var(--leaf-soft); font-size: 1rem; }
+
+  /* ── TIER GUIDE ────────────────────────────────────────────────── */
+  .tier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px; margin: 1rem 0;
+  }
+  .tier-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.1rem 1.25rem;
+  }
+  .tier-card .tier-lbl {
+    font-family: ui-monospace, monospace; font-size: 0.62rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--moss-faint); margin-bottom: 3px;
+  }
+  .tier-card .tier-title { font-size: 1rem; font-weight: 500; color: var(--leaf-soft); margin-bottom: 0.4rem; }
+  .tier-card .tier-lvl {
+    display: inline-block; font-family: ui-monospace, monospace;
+    font-size: 0.65rem;
+    background: rgba(176,139,217,0.14); color: var(--spore-glow);
+    border: 1px solid var(--spore); border-radius: 99px;
+    padding: 1px 8px; margin-bottom: 0.6rem;
+  }
+  .tier-card ul { margin: 0; padding-left: 1.1rem; font-size: 0.875rem; color: var(--moss-dim); }
+  .tier-card ul li { margin-bottom: 5px; }
+
+  /* ── WILD SHAPE FORMS ──────────────────────────────────────────── */
+  .ws-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+    gap: 10px; margin: 1rem 0;
+  }
+  .ws-form {
+    background: var(--bg-bark); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.75rem 1rem;
+  }
+  .ws-cr {
+    display: inline-block; font-family: ui-monospace, monospace;
+    font-size: 0.64rem;
+    background: rgba(212,165,116,0.14); color: var(--amber);
+    border: 1px solid rgba(212,165,116,0.3);
+    border-radius: 99px; padding: 1px 7px; margin-bottom: 4px;
+  }
+  .ws-name { font-weight: 500; color: var(--leaf-soft); font-size: 0.95rem; }
+  .ws-stats {
+    font-family: ui-monospace, monospace; font-size: 0.74rem;
+    color: var(--moss-faint); margin-top: 4px; line-height: 1.75;
   }
 
-  /* ── INLINE LISTS ─────────────────────────────────────────────────────── */
+  /* ── COMBAT TIER BOXES ─────────────────────────────────────────── */
+  .conc-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    gap: 8px; margin-top: 0.5rem;
+  }
+  .conc-box {
+    background: var(--bg-bark); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.6rem 0.8rem;
+  }
+  .conc-box .conc-tier {
+    font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.1em; font-family: ui-monospace, monospace;
+    margin-bottom: 4px;
+  }
+  .conc-box .conc-tier.s { color: var(--spore-glow); }
+  .conc-box .conc-tier.a { color: var(--leaf-soft); }
+  .conc-box .conc-tier.b { color: var(--amber); }
+  .conc-box p { font-size: 0.875rem; color: var(--moss-dim); margin: 0; }
+
+  /* ── SPELL SEARCH ──────────────────────────────────────────────── */
+  .search-wrap {
+    position: sticky; top: var(--nav-h); z-index: 50;
+    background: rgba(13,22,18,0.9);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    padding: 0.55rem 0; margin-bottom: 0.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .search-wrap input {
+    width: 100%; background: var(--bg-bark);
+    border: 1px solid var(--border-soft);
+    border-radius: 8px; color: var(--moss);
+    font-family: ui-monospace, monospace; font-size: 0.9rem;
+    padding: 0.5rem 1rem; outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .search-wrap input::placeholder { color: var(--moss-faint); }
+  .search-wrap input:focus {
+    border-color: var(--spore);
+    box-shadow: 0 0 0 3px rgba(176,139,217,0.12);
+  }
+  .spell-hidden { display: none !important; }
+
+  /* ── SPELL LIST ────────────────────────────────────────────────── */
   .spell-list { list-style: none; padding: 0; margin: 0; }
   .spell-list li {
     padding: 0.45rem 0.75rem;
@@ -215,106 +403,135 @@
   .spell-list li:hover { background: rgba(143,191,107,0.04); }
   .spell-list .name { color: var(--moss); }
   .spell-list .meta {
-    font-family: ui-monospace, monospace;
-    font-size: 0.78rem;
-    color: var(--moss-faint);
-    text-align: right;
-    white-space: nowrap;
+    font-family: ui-monospace, monospace; font-size: 0.78rem;
+    color: var(--moss-faint); text-align: right; white-space: nowrap;
   }
   .spell-list .name.always { color: var(--spore-glow); font-weight: 500; }
-  .spell-list .name.always::before {
-    content: "✦ ";
-    color: var(--spore);
-  }
-  .spell-list .name.bonus::before {
-    content: "★ ";
-    color: var(--amber);
-  }
-
+  .spell-list .name.always::before { content: "✦ "; color: var(--spore); }
+  .spell-list .name.bonus::before  { content: "★ "; color: var(--amber); }
   .col-2 { columns: 2; column-gap: 2rem; }
   @media (max-width: 760px) { .col-2 { columns: 1; } }
 
-  /* ── KEY ──────────────────────────────────────────────────────────────── */
+  /* ── KEY ───────────────────────────────────────────────────────── */
   .key {
-    font-size: 0.82rem;
-    color: var(--moss-dim);
-    margin: 1rem 0;
+    font-size: 0.82rem; color: var(--moss-dim);
+    margin: 0.75rem 0 0.5rem;
     display: flex; flex-wrap: wrap; gap: 1.2rem;
     font-family: ui-monospace, monospace;
   }
   .key span::before { margin-right: 4px; }
-  .key .always::before  { content: "✦"; color: var(--spore); }
-  .key .bonus::before   { content: "★"; color: var(--amber); }
-  .key .ritual::before  { content: "R"; color: var(--leaf-soft); }
-  .key .conc::before    { content: "C"; color: var(--moss-dim); }
+  .key .always::before { content: "✦"; color: var(--spore); }
+  .key .bonus::before  { content: "★"; color: var(--amber); }
+  .key .ritual::before { content: "R"; color: var(--leaf-soft); }
+  .key .conc::before   { content: "C"; color: var(--moss-dim); }
 
-  /* ── FEATURE BLOCK ────────────────────────────────────────────────────── */
+  /* ── FEATURE BLOCK ─────────────────────────────────────────────── */
   .feature {
-    margin: 1rem 0;
-    padding: 1rem 1.25rem;
+    margin: 1rem 0; padding: 1rem 1.25rem;
     border-left: 3px solid var(--spore);
     background: rgba(176,139,217,0.04);
     border-radius: 0 8px 8px 0;
   }
   .feature h4 {
-    margin: 0 0 0.4rem;
-    color: var(--spore-glow);
+    margin: 0 0 0.4rem; color: var(--spore-glow);
     font-family: "Iowan Old Style", Georgia, serif;
-    font-weight: 500;
-    font-size: 1.05rem;
+    font-weight: 500; font-size: 1.05rem;
   }
   .feature .lvl-tag {
-    display: inline-block;
-    font-family: ui-monospace, monospace;
-    font-size: 0.7rem;
-    color: var(--bg-deep);
-    background: var(--spore);
-    padding: 1px 8px;
-    border-radius: 99px;
-    margin-right: 0.6rem;
+    display: inline-block; font-family: ui-monospace, monospace;
+    font-size: 0.7rem; color: var(--bg-deep);
+    background: var(--spore); padding: 1px 8px;
+    border-radius: 99px; margin-right: 0.6rem;
     letter-spacing: 0.05em;
   }
   .feature p { margin-bottom: 0.5rem; }
   .feature p:last-child { margin-bottom: 0; }
 
-  /* ── FOOTER ───────────────────────────────────────────────────────────── */
+  /* ── BACK TO TOP ───────────────────────────────────────────────── */
+  .back-top {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--bg-bark); border: 1px solid var(--border-soft);
+    color: var(--spore-glow); width: 40px; height: 40px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; cursor: pointer;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 200; text-decoration: none; border-bottom: none;
+  }
+  .back-top.visible { opacity: 1; transform: translateY(0); }
+  .back-top:hover { background: var(--border-soft); color: var(--leaf-soft); }
+
+  /* ── FOOTER ────────────────────────────────────────────────────── */
   footer {
     margin-top: 4rem; padding-top: 1.5rem;
     border-top: 1px solid var(--border);
-    text-align: center;
-    color: var(--moss-faint);
-    font-size: 0.82rem;
-    font-family: ui-monospace, monospace;
+    text-align: center; color: var(--moss-faint);
+    font-size: 0.82rem; font-family: ui-monospace, monospace;
+    line-height: 1.9;
   }
   footer a { color: var(--moss-dim); border-bottom: none; }
+  footer a:hover { color: var(--leaf-soft); }
 
-  /* ── PRINT ────────────────────────────────────────────────────────────── */
+  /* ── PRINT ─────────────────────────────────────────────────────── */
   @media print {
-    body { background: white; color: black; }
-    h2 { color: #4a3470; }
-    .hero h1 { color: #4a3470 !important; -webkit-text-fill-color: #4a3470 !important; }
-    .card, table, th, td { background: white; color: black; }
+    .topnav, .search-wrap, .back-top, .spores { display: none !important; }
+    body { background: white !important; color: #111 !important; font-size: 11pt; }
+    h2 { color: #4a3470 !important; border-bottom-color: #ccc !important; scroll-margin-top: 0 !important; }
+    h3 { color: #2d5c1a !important; }
+    .hero h1 { color: #4a3470 !important; -webkit-text-fill-color: #4a3470 !important; background: none !important; }
+    .hero { border-bottom-color: #ccc !important; }
+    .card, .feature, .stat, .ability, .tier-card, .ws-form, .conc-box, .prof-block {
+      background: white !important; color: #111 !important;
+      border-color: #ccc !important; box-shadow: none !important;
+    }
+    table, th, td { background: white !important; color: #111 !important; border-color: #ccc !important; }
+    th { background: #f5f5f5 !important; }
+    .tag { background: #f0f0f0 !important; color: #333 !important; border-color: #ccc !important; }
+    a { color: #4a3470 !important; }
+    .always-prep { color: #5B21B6 !important; }
+    td.lvl { color: #5B21B6 !important; }
+    td .feat-name { color: #2d5c1a !important; }
+    .ws-cr { color: #8B4513 !important; background: #f9f0e3 !important; border-color: #ccc !important; }
   }
 </style>
 </head>
 <body>
 
+<!-- ══════════════════ STICKY NAV ══════════════════ -->
+<nav class="topnav" id="topnav">
+  <span class="nav-brand">🍄 Aldraxis</span>
+  <a href="#glance">At a Glance</a>
+  <a href="#abilities">Abilities</a>
+  <a href="#race">Race</a>
+  <a href="#progression">Progression</a>
+  <a href="#subclass">Subclass</a>
+  <a href="#circle-spells">Circle Spells</a>
+  <a href="#tiers">Tier Guide</a>
+  <a href="#wildshape">Wild Shape</a>
+  <a href="#combat">Combat</a>
+  <a href="#spells">Spells</a>
+  <a href="#sheet">Quick Sheet</a>
+</nav>
+
+<a href="#" class="back-top" id="backTop" aria-label="Back to top">↑</a>
+
 <div class="wrap">
 
-  <!-- ============================ HERO ============================ -->
+  <!-- ══════════════════ HERO ══════════════════ -->
   <header class="hero">
-    <p class="hero-eyebrow">Player Character Reference</p>
+    <div class="spores" aria-hidden="true" id="sporeContainer"></div>
+    <p class="hero-eyebrow">Player Character Reference · D&amp;D 5e · 2014 Ruleset</p>
     <h1>Aldraxis Timberwalk</h1>
-    <h2>Wood Elf · Druid · Circle of Spores</h2>
+    <p class="hero-sub">Wood Elf · Druid · Circle of Spores</p>
     <div class="hero-tags">
       <span class="tag leaf">Wood Elf</span>
       <span class="tag">Druid</span>
       <span class="tag spore">Circle of Spores</span>
-      <span class="tag amber">Wisdom</span>
+      <span class="tag amber">Wisdom Caster</span>
       <span class="tag">Half Caster of Decay</span>
       <span class="tag">Mask of the Wild</span>
+      <span class="tag">Undead Wrangler</span>
     </div>
-
     <p class="flavor">
       Where the mycelium meets the moss-line, Aldraxis listens. To the wood elves
       of his grove he is the threshold-warden — he shepherds the dying back into the
@@ -325,8 +542,8 @@
     </p>
   </header>
 
-  <!-- ============================ STATS-AT-A-GLANCE ============================ -->
-  <section>
+  <!-- ══════════════════ AT A GLANCE ══════════════════ -->
+  <section id="glance">
     <h2><span class="glyph">❖</span> At a Glance</h2>
     <div class="stat-row">
       <div class="stat"><div class="label">Race</div><div class="value">Wood Elf</div></div>
@@ -334,44 +551,140 @@
       <div class="stat"><div class="label">Subclass</div><div class="value">Circle of Spores</div></div>
       <div class="stat"><div class="label">Casting Stat</div><div class="value">Wisdom</div></div>
       <div class="stat"><div class="label">Save DC</div><div class="value">8 + Prof + Wis</div></div>
-      <div class="stat"><div class="label">Spell Attack</div><div class="value">Prof + Wis</div></div>
+      <div class="stat"><div class="label">Spell Attack</div><div class="value">Prof + Wis mod</div></div>
       <div class="stat"><div class="label">Hit Die</div><div class="value">d8</div></div>
       <div class="stat"><div class="label">Speed</div><div class="value">35 ft (Fleet of Foot)</div></div>
       <div class="stat"><div class="label">Darkvision</div><div class="value">60 ft</div></div>
+      <div class="stat"><div class="label">Armour</div><div class="value">Light, medium (no metal)</div></div>
+      <div class="stat"><div class="label">Wild Shape</div><div class="value">2× / short rest</div></div>
+      <div class="stat"><div class="label">Save Profs</div><div class="value">Intelligence, Wisdom</div></div>
     </div>
   </section>
 
-  <!-- ============================ RACE ============================ -->
-  <section>
+  <!-- ══════════════════ ABILITY SCORES ══════════════════ -->
+  <section id="abilities">
+    <h2><span class="glyph">⬡</span> Ability Scores</h2>
+    <p style="color:var(--moss-dim);font-size:0.9rem;margin-bottom:0.5rem;">Standard array / point-buy build. Adjust to your table's generation method.</p>
+    <div class="ability-grid">
+      <div class="ability">
+        <div class="ab-name">Strength</div>
+        <div class="ab-score">8</div>
+        <div class="ab-mod">−1</div>
+      </div>
+      <div class="ability hi">
+        <div class="ab-name">Dexterity</div>
+        <div class="ab-score">16</div>
+        <div class="ab-mod">+3</div>
+      </div>
+      <div class="ability">
+        <div class="ab-name">Constitution</div>
+        <div class="ab-score">14</div>
+        <div class="ab-mod">+2</div>
+      </div>
+      <div class="ability">
+        <div class="ab-name">Intelligence</div>
+        <div class="ab-score">10</div>
+        <div class="ab-mod">+0</div>
+      </div>
+      <div class="ability hi">
+        <div class="ab-name">Wisdom</div>
+        <div class="ab-score">17</div>
+        <div class="ab-mod">+3</div>
+      </div>
+      <div class="ability">
+        <div class="ab-name">Charisma</div>
+        <div class="ab-score">10</div>
+        <div class="ab-mod">+0</div>
+      </div>
+    </div>
+    <p style="font-size:0.82rem;color:var(--moss-faint);">
+      DEX 14 base + 2 racial = 16 · WIS 16 base + 1 racial = 17.
+      <strong>ASI #1 (lv 4)</strong> → WIS 19.
+      <strong>ASI #2 (lv 8)</strong> → WIS 20 (+5). WIS 20 is the critical breakpoint —
+      every spell DC, Halo damage, and Symbiotic Entity check improves.
+    </p>
+
+    <div class="prof-grid">
+      <div class="prof-block">
+        <h4>Saving Throws</h4>
+        <div class="prof-item"><div class="dot"></div> Strength</div>
+        <div class="prof-item"><div class="dot"></div> Dexterity</div>
+        <div class="prof-item"><div class="dot"></div> Constitution</div>
+        <div class="prof-item"><div class="dot p"></div> <strong>Intelligence</strong><span class="mod-val">Prof + 0</span></div>
+        <div class="prof-item"><div class="dot p"></div> <strong>Wisdom</strong><span class="mod-val">Prof + 3</span></div>
+        <div class="prof-item"><div class="dot"></div> Charisma</div>
+      </div>
+      <div class="prof-block">
+        <h4>Recommended Skills</h4>
+        <div class="prof-item"><div class="dot e"></div> <strong>Perception</strong> <span style="font-size:0.76rem;color:var(--moss-faint);">(Keen Senses)</span><span class="mod-val">Prof + 3</span></div>
+        <div class="prof-item"><div class="dot p"></div> <strong>Nature</strong><span class="mod-val">Prof + 0</span></div>
+        <div class="prof-item"><div class="dot p"></div> <strong>Survival</strong><span class="mod-val">Prof + 3</span></div>
+        <div class="prof-item"><div class="dot p"></div> <strong>Stealth</strong><span class="mod-val">Prof + 3</span></div>
+        <div class="prof-item"><div class="dot p"></div> <strong>Insight</strong><span class="mod-val">Prof + 3</span></div>
+        <div class="prof-item"><div class="dot p"></div> Medicine <span style="font-size:0.76rem;color:var(--moss-faint);">(Hermit bg)</span><span class="mod-val">Prof + 3</span></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:1.25rem;">
+      <h3 style="margin-top:0;">Background: Hermit</h3>
+      <p>Aldraxis spent years in solitude on the forest's edge, communing with the mycelial
+      network beneath the roots. The Circle of Spores found him — or he found them — when
+      a dead grove he was tending began to pulse with faint lavender light.</p>
+      <div class="grid-2">
+        <div>
+          <strong style="color:var(--leaf-soft);">Skill Proficiencies</strong>
+          <p style="margin-top:4px;">Medicine, Religion</p>
+          <strong style="color:var(--leaf-soft);">Tool Proficiency</strong>
+          <p style="margin-top:4px;">Herbalism kit</p>
+          <strong style="color:var(--leaf-soft);">Languages</strong>
+          <p style="margin-top:4px;">Common, Elvish (race) + 1 extra</p>
+        </div>
+        <div>
+          <strong style="color:var(--leaf-soft);">Feature: Discovery</strong>
+          <p style="margin-top:4px;">You uncovered a unique truth about the world — that
+          consciousness is not limited to flesh. The mycelium beneath old-growth forests
+          forms a slow, patient mind that has been watching since before elves sang their
+          first songs.</p>
+        </div>
+      </div>
+      <p style="margin-bottom:0;font-size:0.86rem;color:var(--moss-faint);">
+        Equipment: scrollcase with notes &amp; prayers, winter blanket, common clothes,
+        herbalism kit, 5 gp.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════ RACE ══════════════════ -->
+  <section id="race">
     <h2><span class="glyph">🍃</span> Wood Elf Traits (PHB)</h2>
     <div class="card">
       <div class="grid-2">
         <div>
-          <h3>Ability Scores</h3>
+          <h3 style="margin-top:0;">Ability Score Increases</h3>
           <p><strong>+2 Dexterity</strong> · <strong>+1 Wisdom</strong></p>
-          <h3>Age & Size</h3>
+          <h3>Age &amp; Size</h3>
           <p>Mature ~100 years; live ~750. Medium, ~5–6 ft.</p>
           <h3>Languages</h3>
           <p>Common, Elvish</p>
         </div>
         <div>
-          <h3>Racial Features</h3>
+          <h3 style="margin-top:0;">Racial Features</h3>
           <ul>
             <li><strong>Darkvision 60 ft</strong></li>
             <li><strong>Keen Senses</strong> — proficiency in Perception</li>
             <li><strong>Fey Ancestry</strong> — advantage vs. <em>charmed</em>; magic can't put you to sleep</li>
-            <li><strong>Trance</strong> — 4-hour meditation = long rest's sleep</li>
+            <li><strong>Trance</strong> — 4-hour meditation counts as a full night's sleep</li>
             <li><strong>Elf Weapon Training</strong> — longsword, shortsword, shortbow, longbow</li>
             <li><strong>Fleet of Foot</strong> — base speed 35 ft</li>
-            <li><strong>Mask of the Wild</strong> — hide when lightly obscured by foliage, rain, snow, mist</li>
+            <li><strong>Mask of the Wild</strong> — hide when lightly obscured by foliage, rain, snow, mist, or other natural phenomena</li>
           </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================ CLASS PROGRESSION ============================ -->
-  <section>
+  <!-- ══════════════════ CLASS PROGRESSION ══════════════════ -->
+  <section id="progression">
     <h2><span class="glyph">🌿</span> Druid Progression — Levels 1 → 20</h2>
     <table>
       <thead>
@@ -384,385 +697,207 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td class="lvl">1</td>  <td class="center">+2</td><td><span class="feat-name">Druidic, Spellcasting</span></td>                                          <td class="center">2</td><td class="mono">2 — — — — — — — —</td></tr>
-        <tr><td class="lvl">2</td>  <td class="center">+2</td><td><span class="feat-name">Wild Shape, Druid Circle</span> (Spores: <em>Halo of Spores</em>, <em>Symbiotic Entity</em>)</td><td class="center">2</td><td class="mono">3 — — — — — — — —</td></tr>
-        <tr><td class="lvl">3</td>  <td class="center">+2</td><td>—</td>                                                                                              <td class="center">2</td><td class="mono">4 2 — — — — — — —</td></tr>
-        <tr><td class="lvl">4</td>  <td class="center">+2</td><td><span class="feat-name">Wild Shape Improvement, ASI #1</span></td>                                  <td class="center">3</td><td class="mono">4 3 — — — — — — —</td></tr>
-        <tr><td class="lvl">5</td>  <td class="center">+3</td><td>—</td>                                                                                              <td class="center">3</td><td class="mono">4 3 2 — — — — — —</td></tr>
-        <tr><td class="lvl">6</td>  <td class="center">+3</td><td><span class="feat-name">Druid Circle feature</span> (Spores: <em>Fungal Infestation</em>)</td>     <td class="center">3</td><td class="mono">4 3 3 — — — — — —</td></tr>
-        <tr><td class="lvl">7</td>  <td class="center">+3</td><td>—</td>                                                                                              <td class="center">3</td><td class="mono">4 3 3 1 — — — — —</td></tr>
-        <tr><td class="lvl">8</td>  <td class="center">+3</td><td><span class="feat-name">Wild Shape Improvement, ASI #2</span></td>                                  <td class="center">3</td><td class="mono">4 3 3 2 — — — — —</td></tr>
-        <tr><td class="lvl">9</td>  <td class="center">+4</td><td>—</td>                                                                                              <td class="center">3</td><td class="mono">4 3 3 3 1 — — — —</td></tr>
-        <tr><td class="lvl">10</td> <td class="center">+4</td><td><span class="feat-name">Druid Circle feature</span> (Spores: <em>Spreading Spores</em>)</td>       <td class="center">4</td><td class="mono">4 3 3 3 2 — — — —</td></tr>
-        <tr><td class="lvl">11</td> <td class="center">+4</td><td>—</td>                                                                                              <td class="center">4</td><td class="mono">4 3 3 3 2 1 — — —</td></tr>
-        <tr><td class="lvl">12</td> <td class="center">+4</td><td><span class="feat-name">ASI #3</span></td>                                                          <td class="center">4</td><td class="mono">4 3 3 3 2 1 — — —</td></tr>
-        <tr><td class="lvl">13</td> <td class="center">+5</td><td>—</td>                                                                                              <td class="center">4</td><td class="mono">4 3 3 3 2 1 1 — —</td></tr>
-        <tr><td class="lvl">14</td> <td class="center">+5</td><td><span class="feat-name">Druid Circle feature</span> (Spores: <em>Fungal Body</em>)</td>            <td class="center">4</td><td class="mono">4 3 3 3 2 1 1 — —</td></tr>
-        <tr><td class="lvl">15</td> <td class="center">+5</td><td>—</td>                                                                                              <td class="center">4</td><td class="mono">4 3 3 3 2 1 1 1 —</td></tr>
-        <tr><td class="lvl">16</td> <td class="center">+5</td><td><span class="feat-name">ASI #4</span></td>                                                          <td class="center">4</td><td class="mono">4 3 3 3 2 1 1 1 —</td></tr>
-        <tr><td class="lvl">17</td> <td class="center">+6</td><td>—</td>                                                                                              <td class="center">4</td><td class="mono">4 3 3 3 2 1 1 1 1</td></tr>
-        <tr><td class="lvl">18</td> <td class="center">+6</td><td><span class="feat-name">Timeless Body, Beast Spells</span></td>                                     <td class="center">4</td><td class="mono">4 3 3 3 3 1 1 1 1</td></tr>
-        <tr><td class="lvl">19</td> <td class="center">+6</td><td><span class="feat-name">ASI #5</span></td>                                                          <td class="center">4</td><td class="mono">4 3 3 3 3 2 1 1 1</td></tr>
-        <tr><td class="lvl">20</td> <td class="center">+6</td><td><span class="feat-name">Archdruid</span></td>                                                       <td class="center">4</td><td class="mono">4 3 3 3 3 2 2 1 1</td></tr>
+        <tr><td class="lvl">1</td>  <td class="center">+2</td><td><span class="feat-name">Druidic, Spellcasting</span></td>                                                                    <td class="center">2</td><td class="mono">2 — — — — — — — —</td></tr>
+        <tr><td class="lvl">2</td>  <td class="center">+2</td><td><span class="feat-name">Wild Shape, Druid Circle</span> — Spores: <em>Halo of Spores, Symbiotic Entity</em></td>            <td class="center">2</td><td class="mono">3 — — — — — — — —</td></tr>
+        <tr><td class="lvl">3</td>  <td class="center">+2</td><td>—</td>                                                                                                                       <td class="center">2</td><td class="mono">4 2 — — — — — — —</td></tr>
+        <tr><td class="lvl">4</td>  <td class="center">+2</td><td><span class="feat-name">Wild Shape Improvement, ASI #1</span></td>                                                           <td class="center">3</td><td class="mono">4 3 — — — — — — —</td></tr>
+        <tr><td class="lvl">5</td>  <td class="center">+3</td><td>—</td>                                                                                                                       <td class="center">3</td><td class="mono">4 3 2 — — — — — —</td></tr>
+        <tr><td class="lvl">6</td>  <td class="center">+3</td><td><span class="feat-name">Druid Circle feature</span> — Spores: <em>Fungal Infestation</em></td>                               <td class="center">3</td><td class="mono">4 3 3 — — — — — —</td></tr>
+        <tr><td class="lvl">7</td>  <td class="center">+3</td><td>—</td>                                                                                                                       <td class="center">3</td><td class="mono">4 3 3 1 — — — — —</td></tr>
+        <tr><td class="lvl">8</td>  <td class="center">+3</td><td><span class="feat-name">Wild Shape Improvement, ASI #2</span></td>                                                           <td class="center">3</td><td class="mono">4 3 3 2 — — — — —</td></tr>
+        <tr><td class="lvl">9</td>  <td class="center">+4</td><td>—</td>                                                                                                                       <td class="center">3</td><td class="mono">4 3 3 3 1 — — — —</td></tr>
+        <tr><td class="lvl">10</td> <td class="center">+4</td><td><span class="feat-name">Druid Circle feature</span> — Spores: <em>Spreading Spores</em></td>                                 <td class="center">4</td><td class="mono">4 3 3 3 2 — — — —</td></tr>
+        <tr><td class="lvl">11</td> <td class="center">+4</td><td>—</td>                                                                                                                       <td class="center">4</td><td class="mono">4 3 3 3 2 1 — — —</td></tr>
+        <tr><td class="lvl">12</td> <td class="center">+4</td><td><span class="feat-name">ASI #3</span></td>                                                                                   <td class="center">4</td><td class="mono">4 3 3 3 2 1 — — —</td></tr>
+        <tr><td class="lvl">13</td> <td class="center">+5</td><td>—</td>                                                                                                                       <td class="center">4</td><td class="mono">4 3 3 3 2 1 1 — —</td></tr>
+        <tr><td class="lvl">14</td> <td class="center">+5</td><td><span class="feat-name">Druid Circle feature</span> — Spores: <em>Fungal Body</em></td>                                      <td class="center">4</td><td class="mono">4 3 3 3 2 1 1 — —</td></tr>
+        <tr><td class="lvl">15</td> <td class="center">+5</td><td>—</td>                                                                                                                       <td class="center">4</td><td class="mono">4 3 3 3 2 1 1 1 —</td></tr>
+        <tr><td class="lvl">16</td> <td class="center">+5</td><td><span class="feat-name">ASI #4</span></td>                                                                                   <td class="center">4</td><td class="mono">4 3 3 3 2 1 1 1 —</td></tr>
+        <tr><td class="lvl">17</td> <td class="center">+6</td><td>—</td>                                                                                                                       <td class="center">4</td><td class="mono">4 3 3 3 2 1 1 1 1</td></tr>
+        <tr><td class="lvl">18</td> <td class="center">+6</td><td><span class="feat-name">Timeless Body, Beast Spells</span></td>                                                              <td class="center">4</td><td class="mono">4 3 3 3 3 1 1 1 1</td></tr>
+        <tr><td class="lvl">19</td> <td class="center">+6</td><td><span class="feat-name">ASI #5</span></td>                                                                                   <td class="center">4</td><td class="mono">4 3 3 3 3 2 1 1 1</td></tr>
+        <tr><td class="lvl">20</td> <td class="center">+6</td><td><span class="feat-name">Archdruid</span> — unlimited Wild Shape</td>                                                        <td class="center">4</td><td class="mono">4 3 3 3 3 2 2 1 1</td></tr>
       </tbody>
     </table>
-    <p style="font-size:0.88rem; color: var(--moss-dim);">
-      <strong>Spells Prepared</strong> = Druid level + Wisdom modifier (minimum 1).
-      <strong>Circle Spells</strong> are <em>always prepared</em> and don't count
-      against this limit.
+    <p style="font-size:0.88rem;color:var(--moss-dim);">
+      <strong>Spells Prepared</strong> = Druid level + Wisdom modifier (min 1). Circle Spells are
+      <em>always prepared</em> and do not count against this limit.
     </p>
   </section>
 
-  <!-- ============================ SUBCLASS FEATURES ============================ -->
-  <section>
+  <!-- ══════════════════ SUBCLASS ══════════════════ -->
+  <section id="subclass">
     <h2><span class="glyph">🍄</span> Circle of Spores Features</h2>
 
     <div class="feature">
       <h4><span class="lvl-tag">LV 2</span>Halo of Spores</h4>
-      <p>As a <strong>reaction</strong> when a creature you can see moves into a space within
-      <strong>10 ft of you</strong>, or starts its turn there, force a Constitution save
-      against your spell save DC. On a failure: <strong>necrotic damage</strong> equal to:</p>
-      <p class="mono">  1d4 (lv 2)  →  1d6 (lv 6)  →  1d8 (lv 10)  →  1d10 (lv 14)</p>
+      <p>As a <strong>reaction</strong> when a creature you can see moves into a space
+      within <strong>10 ft</strong>, or starts its turn there, force a <strong>CON save</strong>
+      (DC = spell save DC). Failure = necrotic damage:</p>
+      <p class="mono" style="margin-bottom:0.4rem;">  1d4 (lv 2–5)  ·  1d6 (lv 6–9)  ·  1d8 (lv 10–13)  ·  1d10 (lv 14+)</p>
+      <p style="margin-bottom:0;font-size:0.875rem;color:var(--moss-faint);">One reaction per round — only one creature per trigger. Save for half? No — it's all or nothing (full damage on fail, zero on success).</p>
     </div>
 
     <div class="feature">
       <h4><span class="lvl-tag">LV 2</span>Symbiotic Entity</h4>
-      <p>Use a Wild Shape charge as an <strong>action</strong> (instead of transforming) to
-      empower yourself for <strong>10 minutes</strong>:</p>
+      <p>Use a Wild Shape charge as an <strong>action</strong> to empower yourself for
+      <strong>10 minutes</strong>:</p>
       <ul>
-        <li>Gain <strong>4 × druid level</strong> temporary HP</li>
-        <li><strong>Halo of Spores</strong> damage doubles (rolls twice)</li>
+        <li>Gain <strong>4 × druid level</strong> temporary HP (80 HP at lv 20)</li>
+        <li><strong>Halo of Spores</strong> damage doubles — roll the die twice</li>
         <li>Melee weapon attacks deal an extra <strong>1d6 necrotic</strong></li>
       </ul>
-      <p>Ends if you Wild-Shape into a beast or all temp HP is lost.</p>
+      <p style="margin-bottom:0;">Ends if you Wild Shape into a beast or all temp HP is lost.</p>
     </div>
 
     <div class="feature">
       <h4><span class="lvl-tag">LV 6</span>Fungal Infestation</h4>
-      <p>When a beast or humanoid you can see within <strong>10 ft</strong> dies, use a
+      <p>When a <strong>beast or humanoid</strong> within <strong>10 ft</strong> dies, use a
       <strong>reaction</strong> to animate it as a <strong>zombie</strong> for
-      <strong>1 hour</strong>. The zombie acts on your turn, takes one action you
-      mentally command, and counts toward Halo of Spores' aura.</p>
-      <p>Uses = Wisdom modifier (min 1) per long rest.</p>
+      <strong>1 hour</strong>. The zombie acts on your turn; you mentally command its one action.
+      It can trigger Halo of Spores on enemies that move near it.</p>
+      <p style="margin-bottom:0;">Uses per long rest = <strong>Wisdom modifier</strong> (min 1).</p>
     </div>
 
     <div class="feature">
       <h4><span class="lvl-tag">LV 10</span>Spreading Spores</h4>
-      <p>While Symbiotic Entity is active, use a <strong>bonus action</strong> to hurl your
-      Halo of Spores aura into a <strong>10-ft cube</strong> within 30 ft. The cube becomes
-      your Halo for 1 minute (or until you move it again). Costs no resources beyond
-      the bonus action.</p>
+      <p>While Symbiotic Entity is active, use a <strong>bonus action</strong> to throw the
+      Halo of Spores aura into a <strong>10-ft cube</strong> up to 30 ft away. The cube
+      triggers saves instead of your personal aura. Move it again each turn as a bonus action.</p>
+      <p style="margin-bottom:0;font-size:0.875rem;color:var(--moss-faint);">Effective reach: 40 ft (30 ft throw + 10 ft cube). Frees you to use concentration spells without hugging the chokepoint.</p>
     </div>
 
     <div class="feature">
       <h4><span class="lvl-tag">LV 14</span>Fungal Body</h4>
-      <p>You become <strong>immune to being blinded, deafened, frightened, and
-      poisoned</strong>. Critical hits against you are treated as ordinary hits.
-      Aldraxis is, at this point, more colony than elf.</p>
+      <p>Immune to <strong>blinded, deafened, frightened, poisoned</strong>.
+      Critical hits against you become ordinary hits — the colony absorbs the force.</p>
+      <p style="margin-bottom:0;">Aldraxis is, at this point, more network than elf.</p>
     </div>
   </section>
 
-  <!-- ============================ ALWAYS-PREP CIRCLE SPELLS ============================ -->
-  <section>
+  <!-- ══════════════════ CIRCLE SPELLS ══════════════════ -->
+  <section id="circle-spells">
     <h2><span class="glyph">✦</span> Circle of Spores Spells</h2>
     <div class="card spore-glow">
       <p style="margin-top:0;">
         These are <strong>always prepared</strong> at the listed druid level and
-        <strong>do not count</strong> against your spells-prepared maximum. They're
-        added to the druid spell list for you.
+        <strong>do not count</strong> against your spells-prepared maximum.
       </p>
       <table>
         <thead>
-          <tr><th class="center">Druid Lv</th><th>Always-Prepared Spells</th><th class="center">Slot Lv</th></tr>
+          <tr>
+            <th class="center">Druid Lv</th>
+            <th>Always-Prepared Spells</th>
+            <th class="center">Slot</th>
+            <th>Role</th>
+          </tr>
         </thead>
         <tbody>
-          <tr><td class="lvl">2</td>
-              <td><span class="always-prep">chill touch</span> (cantrip) — replaces the standard cantrip slot</td>
-              <td class="center mono">cantrip</td></tr>
-          <tr><td class="lvl">3</td>
-              <td><span class="always-prep">blindness/deafness</span>, <span class="always-prep">gentle repose</span></td>
-              <td class="center mono">2</td></tr>
-          <tr><td class="lvl">5</td>
-              <td><span class="always-prep">animate dead</span>, <span class="always-prep">gaseous form</span></td>
-              <td class="center mono">3</td></tr>
-          <tr><td class="lvl">7</td>
-              <td><span class="always-prep">blight</span>, <span class="always-prep">confusion</span></td>
-              <td class="center mono">4</td></tr>
-          <tr><td class="lvl">9</td>
-              <td><span class="always-prep">cloudkill</span>, <span class="always-prep">contagion</span></td>
-              <td class="center mono">5</td></tr>
+          <tr>
+            <td class="lvl">2</td>
+            <td><span class="always-prep" title="Free bonus cantrip">Chill Touch</span></td>
+            <td class="center mono">cantrip</td>
+            <td style="font-size:0.83rem;color:var(--moss-faint);">Free necrotic cantrip; prevents regen on hit</td>
+          </tr>
+          <tr>
+            <td class="lvl">3</td>
+            <td><span class="always-prep">Blindness/Deafness</span>, <span class="always-prep">Gentle Repose</span></td>
+            <td class="center mono">2nd</td>
+            <td style="font-size:0.83rem;color:var(--moss-faint);">Condition debuff · preserve bodies for undead</td>
+          </tr>
+          <tr>
+            <td class="lvl">5</td>
+            <td><span class="always-prep">Animate Dead</span>, <span class="always-prep">Gaseous Form</span></td>
+            <td class="center mono">3rd</td>
+            <td style="font-size:0.83rem;color:var(--moss-faint);">Undead army · escape or reconnaissance</td>
+          </tr>
+          <tr>
+            <td class="lvl">7</td>
+            <td><span class="always-prep">Blight</span>, <span class="always-prep">Confusion</span></td>
+            <td class="center mono">4th</td>
+            <td style="font-size:0.83rem;color:var(--moss-faint);">Single-target nuke · multi-target chaos</td>
+          </tr>
+          <tr>
+            <td class="lvl">9</td>
+            <td><span class="always-prep">Cloudkill</span>, <span class="always-prep">Contagion</span></td>
+            <td class="center mono">5th</td>
+            <td style="font-size:0.83rem;color:var(--moss-faint);">Persistent AoE poison · multi-round rot debuff</td>
+          </tr>
         </tbody>
       </table>
     </div>
   </section>
 
-  <!-- ============================ DRUID CANTRIPS ============================ -->
-  <section>
-    <h2><span class="glyph">∴</span> Druid Cantrips</h2>
-    <p style="color:var(--moss-dim);">Pick a number based on the table above
-      (2 at lvl 1, 3 at lvl 4, 4 at lvl 10). <span class="always-prep">Chill touch</span> is
-      added <em>for free</em> at druid level 2 by Circle of Spores.</p>
+  <!-- ══════════════════ TIER GUIDE ══════════════════ -->
+  <section id="tiers">
+    <h2><span class="glyph">⚗</span> Tier-by-Tier Play Guide</h2>
+    <p style="color:var(--moss-dim);">Priorities, power spikes, and key unlocks at each tier of play.</p>
+    <div class="tier-grid">
 
-    <div class="card">
-      <h3>Player's Handbook</h3>
-      <ul class="spell-list col-2">
-        <li><span class="name">Druidcraft</span><span class="meta">utility</span></li>
-        <li><span class="name">Guidance</span><span class="meta">+1d4 ability check · C</span></li>
-        <li><span class="name">Mending</span><span class="meta">utility</span></li>
-        <li><span class="name">Poison Spray</span><span class="meta">1d12 poison · 10 ft</span></li>
-        <li><span class="name">Produce Flame</span><span class="meta">1d8 fire · 30 ft</span></li>
-        <li><span class="name">Resistance</span><span class="meta">+1d4 save · C</span></li>
-        <li><span class="name">Shillelagh</span><span class="meta">club/quarterstaff buff</span></li>
-        <li><span class="name">Thorn Whip</span><span class="meta">1d6 piercing · pull 10 ft</span></li>
-      </ul>
-      <h3>Xanathar's & Tasha's</h3>
-      <ul class="spell-list col-2">
-        <li><span class="name">Control Flames</span><span class="meta">XGE · utility</span></li>
-        <li><span class="name">Create Bonfire</span><span class="meta">XGE · 1d8 fire · C</span></li>
-        <li><span class="name">Frostbite</span><span class="meta">XGE · 1d6 cold · disadv next attack</span></li>
-        <li><span class="name">Gust</span><span class="meta">XGE · move 5 lbs / push 5 ft</span></li>
-        <li><span class="name">Infestation</span><span class="meta">XGE · 1d6 poison + random move</span></li>
-        <li><span class="name">Magic Stone</span><span class="meta">XGE · throw enchanted pebbles</span></li>
-        <li><span class="name">Mold Earth</span><span class="meta">XGE · earth shaping</span></li>
-        <li><span class="name">Primal Savagery</span><span class="meta">XGE · 1d10 acid melee</span></li>
-        <li><span class="name">Shape Water</span><span class="meta">XGE · water shaping</span></li>
-        <li><span class="name">Thunderclap</span><span class="meta">XGE · 1d6 thunder · 5 ft burst</span></li>
-        <li><span class="name always">Chill Touch</span><span class="meta">free at lv 2 · 1d8 necrotic</span></li>
-      </ul>
+      <div class="tier-card">
+        <div class="tier-lbl">Tier 1</div>
+        <div class="tier-title">Seeds of Decay</div>
+        <div class="tier-lvl">Levels 1 – 4</div>
+        <ul>
+          <li>Pick <em>Shillelagh</em> (WIS-based melee) and <em>Healing Word</em> (bonus action heal)</li>
+          <li>lv 2: <strong>Symbiotic Entity</strong> is your combat opener — 8–16 temp HP, 1d6 extra necrotic per melee hit</li>
+          <li>Use Halo once and then decide whether to save your reaction for <em>Absorb Elements</em></li>
+          <li>Battlefield control: <em>Entangle</em>, <em>Faerie Fire</em>, <em>Thunderwave</em></li>
+          <li><strong>ASI priority:</strong> WIS 18 or 19 at lv 4</li>
+        </ul>
+      </div>
+
+      <div class="tier-card">
+        <div class="tier-lbl">Tier 2</div>
+        <div class="tier-title">The Fungal Surge</div>
+        <div class="tier-lvl">Levels 5 – 10</div>
+        <ul>
+          <li>lv 5: <strong>Animate Dead</strong> unlocked — begin building your undead retinue; recast every 24 hrs</li>
+          <li>lv 5: <em>Conjure Animals</em> (8× CR ¼ wolves = prone spam) is a tier-defining pick</li>
+          <li>lv 6: <strong>Fungal Infestation</strong> — corpses become free zombies</li>
+          <li>lv 7: <em>Blight</em> (8d8 necrotic) is always-prep, no slot needed to prepare</li>
+          <li>lv 9: <em>Cloudkill</em> parked on a chokepoint wins encounters</li>
+          <li>lv 10: <strong>Spreading Spores</strong> — relocate aura to doorways via bonus action</li>
+          <li><strong>ASI priority:</strong> WIS 20 (+5) at lv 8 — the critical breakpoint</li>
+        </ul>
+      </div>
+
+      <div class="tier-card">
+        <div class="tier-lbl">Tier 3</div>
+        <div class="tier-title">Undying Network</div>
+        <div class="tier-lvl">Levels 11 – 16</div>
+        <ul>
+          <li>High-level concentration spells dominate: <em>Conjure Elemental</em>, <em>Reverse Gravity</em>, <em>Sunbeam</em></li>
+          <li>lv 14: <strong>Fungal Body</strong> — immune to blind, deafen, frighten, poison; crits normalised</li>
+          <li>Large <em>Animate Dead</em> chain = escort of skeletons/zombies; coordinate with DM</li>
+          <li><em>Heroes' Feast</em> (lv 6 slot): 2d10 max temp HP + poison immunity + fear immunity for 24 hrs — cast before major encounters</li>
+          <li>You cannot be blinded, so <em>Sunbeam</em> through fog is a signature move</li>
+        </ul>
+      </div>
+
+      <div class="tier-card">
+        <div class="tier-lbl">Tier 4</div>
+        <div class="tier-title">The Ancient Grove</div>
+        <div class="tier-lvl">Levels 17 – 20</div>
+        <ul>
+          <li>lv 18: <strong>Beast Spells</strong> — cast while in Wild Shape form</li>
+          <li>lv 20: <strong>Archdruid</strong> — unlimited Wild Shape; Symbiotic Entity is effectively always available</li>
+          <li>Cast <em>Foresight</em> on yourself at dawn: 8 hrs of advantage on everything</li>
+          <li><em>Shapechange</em>: become any creature CR ≤ your level, retain class features</li>
+          <li><em>True Resurrection</em> for party permanence; <em>Storm of Vengeance</em> for battlefield dominance</li>
+        </ul>
+      </div>
+
     </div>
   </section>
 
-  <!-- ============================ KEY ============================ -->
-  <p class="key">
-    <span class="always">always prepared (Circle)</span>
-    <span class="bonus">bonus action</span>
-    <span class="ritual">ritual</span>
-    <span class="conc">concentration</span>
-  </p>
-
-  <!-- ============================ SPELLS BY LEVEL ============================ -->
-
-  <!-- LEVEL 1 -->
-  <section>
-    <h2><span class="glyph">①</span> 1st-Level Spells</h2>
-    <div class="card">
-      <ul class="spell-list col-2">
-        <li><span class="name">Animal Friendship</span><span class="meta">action · 1 hr</span></li>
-        <li><span class="name">Charm Person</span><span class="meta">action · 1 hr</span></li>
-        <li><span class="name">Create or Destroy Water</span><span class="meta">action · 10 gal</span></li>
-        <li><span class="name">Cure Wounds</span><span class="meta">action · 1d8 + WIS</span></li>
-        <li><span class="name">Detect Magic</span><span class="meta">R · 10 min · C</span></li>
-        <li><span class="name">Detect Poison &amp; Disease</span><span class="meta">R · 10 min · C</span></li>
-        <li><span class="name">Entangle</span><span class="meta">action · 1 min · C · STR save</span></li>
-        <li><span class="name">Faerie Fire</span><span class="meta">action · 1 min · C · DEX save</span></li>
-        <li><span class="name">Fog Cloud</span><span class="meta">action · 1 hr · C · 20-ft sphere</span></li>
-        <li><span class="name">Goodberry</span><span class="meta">action · 10 berries · 24h</span></li>
-        <li><span class="name bonus">Healing Word</span><span class="meta">bonus · 1d4 + WIS · 60 ft</span></li>
-        <li><span class="name">Jump</span><span class="meta">action · 1 min · ×3 jump dist</span></li>
-        <li><span class="name">Longstrider</span><span class="meta">action · 1 hr · +10 speed</span></li>
-        <li><span class="name">Purify Food &amp; Drink</span><span class="meta">R · action · 5-ft sphere</span></li>
-        <li><span class="name">Speak with Animals</span><span class="meta">R · 10 min</span></li>
-        <li><span class="name">Thunderwave</span><span class="meta">action · 2d8 thunder · 15-ft cube</span></li>
-        <li><span class="name">Absorb Elements</span><span class="meta">XGE · reaction · resist + ½ ret</span></li>
-        <li><span class="name">Beast Bond</span><span class="meta">XGE · 10 min · C · adv vs each other</span></li>
-        <li><span class="name">Earth Tremor</span><span class="meta">XGE · 1d6 + prone · 10-ft burst</span></li>
-        <li><span class="name">Ice Knife</span><span class="meta">XGE · 1d10 + 2d6 cold splash</span></li>
-        <li><span class="name">Snare</span><span class="meta">XGE · 1 min cast · trap, restrain</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- LEVEL 2 -->
-  <section>
-    <h2><span class="glyph">②</span> 2nd-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 3</span></h2>
-    <div class="card">
-      <ul class="spell-list col-2">
-        <li><span class="name always">Blindness/Deafness</span><span class="meta">always-prep · 1 min · CON save</span></li>
-        <li><span class="name always">Gentle Repose</span><span class="meta">R · always-prep · 10 days</span></li>
-        <li><span class="name">Animal Messenger</span><span class="meta">action · 24h · tiny beast</span></li>
-        <li><span class="name">Barkskin</span><span class="meta">action · 1 hr · C · AC 16</span></li>
-        <li><span class="name">Beast Sense</span><span class="meta">R · 1 hr · C</span></li>
-        <li><span class="name">Darkvision</span><span class="meta">action · 8 hr · 60 ft</span></li>
-        <li><span class="name">Enhance Ability</span><span class="meta">action · 1 hr · C</span></li>
-        <li><span class="name">Enlarge/Reduce</span><span class="meta">action · 1 min · C</span></li>
-        <li><span class="name">Find Traps</span><span class="meta">action · instant</span></li>
-        <li><span class="name">Flame Blade</span><span class="meta">bonus · 10 min · C · 3d6 fire</span></li>
-        <li><span class="name">Flaming Sphere</span><span class="meta">action · 1 min · C · 2d6 fire</span></li>
-        <li><span class="name">Gust of Wind</span><span class="meta">action · 1 min · C · 60-ft line</span></li>
-        <li><span class="name">Heat Metal</span><span class="meta">bonus · 1 min · C · 2d8 fire</span></li>
-        <li><span class="name">Hold Person</span><span class="meta">action · 1 min · C · WIS save · paralyze</span></li>
-        <li><span class="name bonus">Lesser Restoration</span><span class="meta">action · cure poison/paralysis</span></li>
-        <li><span class="name">Locate Animals or Plants</span><span class="meta">R · instant</span></li>
-        <li><span class="name">Locate Object</span><span class="meta">action · 10 min · C · 1000 ft</span></li>
-        <li><span class="name">Moonbeam</span><span class="meta">action · 1 min · C · 2d10 radiant</span></li>
-        <li><span class="name">Pass without Trace</span><span class="meta">action · 1 hr · C · +10 stealth</span></li>
-        <li><span class="name">Protection from Poison</span><span class="meta">action · 1 hr · adv vs poisoned</span></li>
-        <li><span class="name">Spike Growth</span><span class="meta">action · 10 min · C · 20-ft sphere</span></li>
-        <li><span class="name">Summon Beast</span><span class="meta">TCE · action · 1 hr · C · spirit</span></li>
-        <li><span class="name">Dust Devil</span><span class="meta">XGE · action · 1 min · C · 5-ft cube</span></li>
-        <li><span class="name">Earthbind</span><span class="meta">XGE · action · 1 min · C · pull to ground</span></li>
-        <li><span class="name bonus">Healing Spirit</span><span class="meta">XGE · bonus · 1 min · C · 1d6 heal</span></li>
-        <li><span class="name">Skywrite</span><span class="meta">XGE · R · 1 hr · C · sky message</span></li>
-        <li><span class="name">Warding Wind</span><span class="meta">XGE · action · 10 min · C · 10-ft aura</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- LEVEL 3 -->
-  <section>
-    <h2><span class="glyph">③</span> 3rd-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 5</span></h2>
-    <div class="card">
-      <ul class="spell-list col-2">
-        <li><span class="name always">Animate Dead</span><span class="meta">always-prep · 1 min cast · 24h ctrl</span></li>
-        <li><span class="name always">Gaseous Form</span><span class="meta">always-prep · 1 hr · C · self mist</span></li>
-        <li><span class="name">Call Lightning</span><span class="meta">action · 10 min · C · 3d10 lightning</span></li>
-        <li><span class="name">Conjure Animals</span><span class="meta">action · 1 hr · C · summon CR ≤ 2</span></li>
-        <li><span class="name">Daylight</span><span class="meta">action · 1 hr · 60-ft sphere</span></li>
-        <li><span class="name">Dispel Magic</span><span class="meta">action · instant</span></li>
-        <li><span class="name">Meld into Stone</span><span class="meta">R · action · 8 hr</span></li>
-        <li><span class="name">Plant Growth</span><span class="meta">action / 8h cast · enrich land</span></li>
-        <li><span class="name">Protection from Energy</span><span class="meta">action · 1 hr · C · resistance</span></li>
-        <li><span class="name">Sleet Storm</span><span class="meta">action · 1 min · C · 40-ft cyl</span></li>
-        <li><span class="name">Speak with Plants</span><span class="meta">action · 10 min</span></li>
-        <li><span class="name">Water Breathing</span><span class="meta">R · action · 24 hr</span></li>
-        <li><span class="name">Water Walk</span><span class="meta">R · action · 1 hr</span></li>
-        <li><span class="name">Wind Wall</span><span class="meta">action · 1 min · C · 50×15 ft wall</span></li>
-        <li><span class="name">Erupting Earth</span><span class="meta">XGE · action · 3d12 bludg · 20-ft cube</span></li>
-        <li><span class="name">Flame Arrows</span><span class="meta">XGE · action · 1 hr · C · +1d6 fire arrows</span></li>
-        <li><span class="name">Tidal Wave</span><span class="meta">XGE · action · 4d8 + prone · 30×10 ft</span></li>
-        <li><span class="name">Summon Fey</span><span class="meta">TCE · action · 1 hr · C · spirit</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- LEVEL 4 -->
-  <section>
-    <h2><span class="glyph">④</span> 4th-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 7</span></h2>
-    <div class="card">
-      <ul class="spell-list col-2">
-        <li><span class="name always">Blight</span><span class="meta">always-prep · 8d8 necrotic · single tgt</span></li>
-        <li><span class="name always">Confusion</span><span class="meta">always-prep · 1 min · C · 10-ft sphere</span></li>
-        <li><span class="name">Conjure Minor Elementals</span><span class="meta">1 min cast · 1 hr · C</span></li>
-        <li><span class="name">Conjure Woodland Beings</span><span class="meta">action · 1 hr · C · CR ≤ 1 fey</span></li>
-        <li><span class="name">Control Water</span><span class="meta">action · 10 min · C</span></li>
-        <li><span class="name">Dominate Beast</span><span class="meta">action · 1 min · C · WIS save</span></li>
-        <li><span class="name">Freedom of Movement</span><span class="meta">action · 1 hr · ignore restraints</span></li>
-        <li><span class="name">Giant Insect</span><span class="meta">action · 10 min · C · upsize bugs</span></li>
-        <li><span class="name">Grasping Vine</span><span class="meta">bonus · 1 min · C · 20-ft pull</span></li>
-        <li><span class="name">Hallucinatory Terrain</span><span class="meta">10 min cast · 24 hr</span></li>
-        <li><span class="name">Ice Storm</span><span class="meta">action · 2d8 + 4d6 · 20-ft cyl</span></li>
-        <li><span class="name">Locate Creature</span><span class="meta">action · 1 hr · C</span></li>
-        <li><span class="name">Polymorph</span><span class="meta">action · 1 hr · C · WIS save</span></li>
-        <li><span class="name">Stone Shape</span><span class="meta">action · sculpt 5-ft cube</span></li>
-        <li><span class="name">Stoneskin</span><span class="meta">action · 1 hr · C · resist nonmagical</span></li>
-        <li><span class="name">Wall of Fire</span><span class="meta">action · 1 min · C · 60-ft wall</span></li>
-        <li><span class="name">Charm Monster</span><span class="meta">XGE · action · 1 hr</span></li>
-        <li><span class="name">Elemental Bane</span><span class="meta">XGE · action · 1 min · C · vuln</span></li>
-        <li><span class="name">Watery Sphere</span><span class="meta">XGE · action · 1 min · C</span></li>
-        <li><span class="name">Summon Elemental</span><span class="meta">TCE · action · 1 hr · C · spirit</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- LEVEL 5 -->
-  <section>
-    <h2><span class="glyph">⑤</span> 5th-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 9</span></h2>
-    <div class="card">
-      <ul class="spell-list col-2">
-        <li><span class="name always">Cloudkill</span><span class="meta">always-prep · 5d8 poison · 20-ft sphere</span></li>
-        <li><span class="name always">Contagion</span><span class="meta">always-prep · disease &amp; debuff</span></li>
-        <li><span class="name">Antilife Shell</span><span class="meta">action · 1 hr · C · 10-ft aura</span></li>
-        <li><span class="name">Awaken</span><span class="meta">8 hr cast · awaken plant/beast</span></li>
-        <li><span class="name">Commune with Nature</span><span class="meta">R · 1 min cast</span></li>
-        <li><span class="name">Conjure Elemental</span><span class="meta">1 min cast · 1 hr · C · CR ≤ 5</span></li>
-        <li><span class="name">Geas</span><span class="meta">1 min cast · 30 days · WIS save</span></li>
-        <li><span class="name bonus">Greater Restoration</span><span class="meta">action · cure exhaustion / charm</span></li>
-        <li><span class="name">Insect Plague</span><span class="meta">action · 10 min · C · 20-ft sphere</span></li>
-        <li><span class="name">Mass Cure Wounds</span><span class="meta">action · 3d8 + WIS · 6 targets</span></li>
-        <li><span class="name">Planar Binding</span><span class="meta">1 hr cast · 24 hr+</span></li>
-        <li><span class="name">Reincarnate</span><span class="meta">1 hr cast · new body</span></li>
-        <li><span class="name">Scrying</span><span class="meta">10 min cast · 10 min · C</span></li>
-        <li><span class="name">Tree Stride</span><span class="meta">action · 1 min · C · teleport via trees</span></li>
-        <li><span class="name">Wall of Stone</span><span class="meta">action · 10 min · C</span></li>
-        <li><span class="name">Maelstrom</span><span class="meta">XGE · action · 1 min · C · 30-ft sphere</span></li>
-        <li><span class="name">Transmute Rock</span><span class="meta">XGE · action · stone↔mud</span></li>
-        <li><span class="name">Wrath of Nature</span><span class="meta">XGE · action · 1 min · C</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- LEVEL 6 -->
-  <section>
-    <h2><span class="glyph">⑥</span> 6th-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 11</span></h2>
-    <div class="card">
-      <ul class="spell-list col-2">
-        <li><span class="name">Conjure Fey</span><span class="meta">action · 1 hr · C · CR ≤ 6</span></li>
-        <li><span class="name">Find the Path</span><span class="meta">1 min cast · 24 hr · C</span></li>
-        <li><span class="name">Heal</span><span class="meta">action · 70 HP, cure conditions</span></li>
-        <li><span class="name">Heroes' Feast</span><span class="meta">10 min cast · 24 hr buff</span></li>
-        <li><span class="name">Move Earth</span><span class="meta">action · 2 hr · C · reshape terrain</span></li>
-        <li><span class="name">Sunbeam</span><span class="meta">action · 1 min · C · 6d8 radiant line</span></li>
-        <li><span class="name">Transport via Plants</span><span class="meta">action · 1 rd · plant gateway</span></li>
-        <li><span class="name">Wall of Thorns</span><span class="meta">action · 10 min · C · 60×10 ft wall</span></li>
-        <li><span class="name">Wind Walk</span><span class="meta">1 min cast · 8 hr · gaseous travel</span></li>
-        <li><span class="name">Bones of the Earth</span><span class="meta">XGE · action · 6 stone pillars</span></li>
-        <li><span class="name">Druid Grove</span><span class="meta">XGE · 10 min cast · 24 hr</span></li>
-        <li><span class="name">Primordial Ward</span><span class="meta">XGE · action · 1 min · C · resist 5 dmg types</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- LEVEL 7 -->
-  <section>
-    <h2><span class="glyph">⑦</span> 7th-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 13</span></h2>
-    <div class="card">
-      <ul class="spell-list col-2">
-        <li><span class="name">Fire Storm</span><span class="meta">action · 7d10 fire · 10×10×10 cubes</span></li>
-        <li><span class="name">Mirage Arcane</span><span class="meta">10 min cast · 10 days</span></li>
-        <li><span class="name">Plane Shift</span><span class="meta">action · planar travel</span></li>
-        <li><span class="name">Regenerate</span><span class="meta">1 min cast · 1 hr · regrow limbs</span></li>
-        <li><span class="name">Reverse Gravity</span><span class="meta">action · 1 min · C · 50-ft cyl</span></li>
-        <li><span class="name">Whirlwind</span><span class="meta">XGE · action · 1 min · C · 10-ft cyl</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- LEVEL 8 -->
-  <section>
-    <h2><span class="glyph">⑧</span> 8th-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 15</span></h2>
-    <div class="card">
-      <ul class="spell-list col-2">
-        <li><span class="name">Animal Shapes</span><span class="meta">action · 24 hr · C · turn allies into beasts</span></li>
-        <li><span class="name">Antipathy/Sympathy</span><span class="meta">1 hr cast · 10 days · WIS save</span></li>
-        <li><span class="name">Control Weather</span><span class="meta">10 min cast · 8 hr · C · 5-mile radius</span></li>
-        <li><span class="name">Earthquake</span><span class="meta">action · 1 min · C · 100-ft radius</span></li>
-        <li><span class="name">Feeblemind</span><span class="meta">action · INT 1 / no spells</span></li>
-        <li><span class="name">Sunburst</span><span class="meta">action · 12d6 radiant · 60-ft sphere</span></li>
-        <li><span class="name">Tsunami</span><span class="meta">1 min cast · 6 rd · C · giant wave</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- LEVEL 9 -->
-  <section>
-    <h2><span class="glyph">⑨</span> 9th-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 17</span></h2>
-    <div class="card">
-      <ul class="spell-list col-2">
-        <li><span class="name">Foresight</span><span class="meta">1 min cast · 8 hr · adv attacks/saves</span></li>
-        <li><span class="name">Shapechange</span><span class="meta">action · 1 hr · C · become any creature</span></li>
-        <li><span class="name">Storm of Vengeance</span><span class="meta">action · 1 min · C · 360-ft sphere</span></li>
-        <li><span class="name">True Resurrection</span><span class="meta">1 hr cast · raise dead, any time</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ============================ WILD SHAPE ============================ -->
-  <section>
+  <!-- ══════════════════ WILD SHAPE ══════════════════ -->
+  <section id="wildshape">
     <h2><span class="glyph">🐾</span> Wild Shape Reference</h2>
     <div class="card">
-      <p>Wild Shape twice per short rest (regains on short and long). Stats become the
-      beast's; mental stats remain yours. Hit points are tracked separately — when WS
-      drops to 0, you revert with overflow damage applied to your real HP.</p>
+      <p>Wild Shape recharges on a short or long rest (2 uses). Stats become the beast's;
+      mental stats remain yours. HP is tracked separately — when Wild Shape HP drops to 0,
+      you revert with any overflow applied to your real HP pool.</p>
 
       <table>
         <thead>
@@ -770,82 +905,527 @@
             <th class="center">Druid Lv</th>
             <th class="center">Max CR</th>
             <th>Limitations</th>
-            <th>Sample Forms</th>
+            <th>Notable Forms</th>
           </tr>
         </thead>
         <tbody>
           <tr><td class="lvl">2</td><td class="center">¼</td>
-              <td>No flying or swimming speed</td>
-              <td>Wolf, giant badger, mastiff, panther, riding horse</td></tr>
+              <td>No fly or swim speed</td>
+              <td>Wolf, Panther, Riding Horse, Giant Badger</td></tr>
           <tr><td class="lvl">4</td><td class="center">½</td>
-              <td>No flying speed</td>
-              <td>Crocodile, giant wolf spider, ape (cr ½)</td></tr>
+              <td>No fly speed</td>
+              <td>Crocodile, Giant Wolf Spider, Ape, Black Bear</td></tr>
           <tr><td class="lvl">8</td><td class="center">1</td>
               <td>No restrictions</td>
-              <td>Giant eagle, dire wolf, giant elk, brown bear (cr 1)</td></tr>
+              <td>Dire Wolf, Brown Bear, Giant Eagle, Giant Octopus</td></tr>
         </tbody>
       </table>
 
+      <h3>Notable Forms Detail</h3>
+      <div class="ws-grid">
+        <div class="ws-form">
+          <div class="ws-cr">CR ¼</div>
+          <div class="ws-name">Wolf</div>
+          <div class="ws-stats">AC 13 · HP 11 · Speed 40 ft<br>Bite +4 · 2d4+2 · prone on hit (STR save)<br>Pack Tactics: adv when ally adjacent</div>
+        </div>
+        <div class="ws-form">
+          <div class="ws-cr">CR ¼</div>
+          <div class="ws-name">Panther</div>
+          <div class="ws-stats">AC 12 · HP 13 · Speed 50 ft, Climb 40 ft<br>Bite +4 · 1d6+2 · Pounce → prone<br>Best lv 2 scout form</div>
+        </div>
+        <div class="ws-form">
+          <div class="ws-cr">CR ½</div>
+          <div class="ws-name">Crocodile</div>
+          <div class="ws-stats">AC 12 · HP 19 · Swim 20 ft<br>Bite +4 · 1d10+2 · grapple (esc DC 12)<br>Restrains grappled targets in water</div>
+        </div>
+        <div class="ws-form">
+          <div class="ws-cr">CR ½</div>
+          <div class="ws-name">Ape</div>
+          <div class="ws-stats">AC 12 · HP 19 · Climb 30 ft<br>Multiattack: 2× fists +5 · 1d6+3<br>Rock throw 50 ft · +5 · 1d6+3</div>
+        </div>
+        <div class="ws-form">
+          <div class="ws-cr">CR 1</div>
+          <div class="ws-name">Dire Wolf</div>
+          <div class="ws-stats">AC 14 · HP 37 · Speed 50 ft<br>Bite +5 · 2d6+3 · prone on hit<br>Pack Tactics</div>
+        </div>
+        <div class="ws-form">
+          <div class="ws-cr">CR 1</div>
+          <div class="ws-name">Brown Bear</div>
+          <div class="ws-stats">AC 11 · HP 34 · Climb 30 ft<br>Multiattack: Claws +5 · 2d6+4<br>Bite +5 · 1d8+4</div>
+        </div>
+        <div class="ws-form">
+          <div class="ws-cr">CR 1</div>
+          <div class="ws-name">Giant Eagle</div>
+          <div class="ws-stats">AC 13 · HP 26 · Fly 80 ft<br>Talons +5 · 2d6+3 · grapple<br>Scout, aerial transport, diplomacy (speaks)</div>
+        </div>
+        <div class="ws-form">
+          <div class="ws-cr">CR 1</div>
+          <div class="ws-name">Giant Octopus</div>
+          <div class="ws-stats">AC 11 · HP 52 · Swim 60 ft<br>Tentacles: grapple up to 8 creatures<br>Ink Cloud: heavily obscures 5-ft cube</div>
+        </div>
+      </div>
+
       <h3>Symbiotic Entity vs. Wild Shape</h3>
-      <p>You can spend a Wild Shape charge on either. Symbiotic Entity is the typical
-      Spore Druid combat opener — temp HP scaling with druid level + extra necrotic
-      damage means the spore form usually beats a beast form for damage and survivability
-      at low-to-mid tier.</p>
+      <p style="margin-bottom:0;">
+        You can spend a Wild Shape charge on either. For combat, <strong>Symbiotic Entity
+        almost always wins</strong> — temp HP scales with druid level, double Halo damage,
+        and bonus melee necrotic stacks. Reserve beast form for scouting, aquatic environments,
+        or situations where flight (Giant Eagle) is critical. At lv 18, Beast Spells means you
+        can cast while transformed.
+      </p>
     </div>
   </section>
 
-  <!-- ============================ COMBAT QUICK REF ============================ -->
-  <section>
+  <!-- ══════════════════ COMBAT ══════════════════ -->
+  <section id="combat">
     <h2><span class="glyph">⚔</span> Combat Quick Reference</h2>
     <div class="card">
       <div class="grid-2">
         <div>
-          <h3>Typical Opening (Tier 2, lv 5–10)</h3>
+          <h3 style="margin-top:0;">Standard Opening (Tier 2, lv 5–10)</h3>
           <ol>
-            <li><strong>Bonus action:</strong> activate <em>Symbiotic Entity</em> (4×lv temp HP)</li>
-            <li><strong>Action:</strong> cast a control spell (<em>Spike Growth</em>, <em>Moonbeam</em>)</li>
-            <li><strong>Reaction:</strong> <em>Halo of Spores</em> on enemies in range</li>
-            <li><strong>Subsequent turns:</strong> melee with Shillelagh + 1d6 necrotic, or sustain control spell</li>
+            <li><strong>Round 1 action:</strong> Activate <em>Symbiotic Entity</em> (4×lv temp HP + 1d6 necrotic melee)</li>
+            <li><strong>Round 2 action:</strong> Cast concentration control spell (<em>Spike Growth</em>, <em>Moonbeam</em>, <em>Cloudkill</em>)</li>
+            <li><strong>Any round reaction:</strong> <em>Halo of Spores</em> on entering enemies (doubled while SE is active)</li>
+            <li><strong>Subsequent turns:</strong> Shillelagh + melee + 1d6 necrotic, or reposition to sustain concentration</li>
+          </ol>
+          <h3>Spreading Spores Era (lv 10+)</h3>
+          <ol>
+            <li>Activate Symbiotic Entity</li>
+            <li><strong>Bonus action:</strong> throw aura cube into doorway or chokepoint</li>
+            <li>Cast concentration spell as normal — no need to be at the chokepoint</li>
+            <li>Use bonus action each turn to reposition the cube</li>
           </ol>
         </div>
         <div>
-          <h3>Reaction Economy</h3>
-          <p>Spore Druids have one of the densest reaction kits in 5e — every 10-ft trigger
-          fires <em>Halo of Spores</em>, but only one reaction per round. Use other
-          reactions (e.g., <em>Absorb Elements</em>) thoughtfully.</p>
-          <h3>Necrotic Stack at lv 6 (Symbiotic active)</h3>
-          <p class="mono">Halo: 2d6 necrotic on save fail<br>
-          Melee: weapon + 1d6 necrotic<br>
-          Cantrip: chill touch 1d8 necrotic</p>
+          <h3 style="margin-top:0;">Reaction Economy</h3>
+          <p>One reaction per round. Default to <em>Halo of Spores</em> the moment any
+          enemy enters range. Only use <em>Absorb Elements</em> if Halo already fired this round
+          or you're expecting a major elemental hit.</p>
+          <h3>Necrotic Stack (lv 6, Symbiotic active)</h3>
+          <p class="mono" style="font-size:0.83rem;line-height:1.8;">
+            Halo of Spores:  2d6 necrotic (CON save)<br>
+            Melee hit:       weapon + 1d6 necrotic<br>
+            Chill Touch:     1d8 necrotic + no regen<br>
+            ───────────────────────────<br>
+            Per turn ceiling ≈ 3d6 + 1d8 necrotic
+          </p>
+          <h3>Fungal Infestation Tip</h3>
+          <p style="margin-bottom:0;">Trigger on <em>small</em> kills (cultists, goblins)
+          to save reactions for bigger threats. Zombies last 1 hr; cast <em>Animate Dead</em>
+          for permanent minion control instead.</p>
+        </div>
+      </div>
+
+      <h3>Concentration Priority</h3>
+      <div class="conc-grid">
+        <div class="conc-box">
+          <div class="conc-tier s">S-Tier</div>
+          <p>Conjure Animals (8× wolves), Call Lightning (outdoors), Spike Growth</p>
+        </div>
+        <div class="conc-box">
+          <div class="conc-tier a">A-Tier</div>
+          <p>Moonbeam, Cloudkill, Confusion, Insect Plague, Hold Person (single boss)</p>
+        </div>
+        <div class="conc-box">
+          <div class="conc-tier b">B-Tier</div>
+          <p>Faerie Fire (adv for allies), Entangle (locking immobile enemies), Sleet Storm</p>
+        </div>
+      </div>
+      <p style="font-size:0.82rem;color:var(--moss-faint);margin-top:0.75rem;margin-bottom:0;">
+        Animate Dead has no concentration — stack it with any control spell for free.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════ SPELL LIST HEADER ══════════════════ -->
+  <h2 id="spells"><span class="glyph">✧</span> Druid Spell List</h2>
+  <p class="key">
+    <span class="always">always prepared (Circle of Spores)</span>
+    <span class="bonus">bonus action cast</span>
+    <span class="ritual">R — ritual</span>
+    <span class="conc">C — concentration</span>
+  </p>
+
+  <div class="search-wrap">
+    <input type="search" id="spellSearch"
+           placeholder="Filter spells by name…"
+           autocomplete="off" spellcheck="false">
+  </div>
+
+  <!-- CANTRIPS -->
+  <section>
+    <h2><span class="glyph">∴</span> Cantrips</h2>
+    <p style="color:var(--moss-dim);">2 known at lv 1, 3 at lv 4, 4 at lv 10.
+      <span class="always-prep">Chill Touch</span> is granted free at druid lv 2 — does not use a cantrip slot.</p>
+    <div class="card">
+      <h3>Player's Handbook</h3>
+      <ul class="spell-list col-2">
+        <li><span class="name">Druidcraft</span><span class="meta">utility</span></li>
+        <li><span class="name">Guidance</span><span class="meta">+1d4 ability check · C</span></li>
+        <li><span class="name">Mending</span><span class="meta">1 min cast · utility</span></li>
+        <li><span class="name">Poison Spray</span><span class="meta">1d12 poison · 10 ft · CON save</span></li>
+        <li><span class="name">Produce Flame</span><span class="meta">1d8 fire · throw 30 ft</span></li>
+        <li><span class="name">Resistance</span><span class="meta">+1d4 to one save · C</span></li>
+        <li><span class="name">Shillelagh</span><span class="meta">club/staff → WIS · 1 min · C</span></li>
+        <li><span class="name">Thorn Whip</span><span class="meta">1d6 piercing · pull 10 ft · 30 ft</span></li>
+      </ul>
+      <h3>Xanathar's &amp; Tasha's</h3>
+      <ul class="spell-list col-2">
+        <li><span class="name">Control Flames</span><span class="meta">XGE · utility</span></li>
+        <li><span class="name">Create Bonfire</span><span class="meta">XGE · 1d8 fire · C</span></li>
+        <li><span class="name">Frostbite</span><span class="meta">XGE · 1d6 cold · disadv next attack · CON</span></li>
+        <li><span class="name">Gust</span><span class="meta">XGE · push or move 5 lbs</span></li>
+        <li><span class="name">Infestation</span><span class="meta">XGE · 1d6 poison + forced random move</span></li>
+        <li><span class="name">Magic Stone</span><span class="meta">XGE · 3 sling-enchanted pebbles</span></li>
+        <li><span class="name">Mold Earth</span><span class="meta">XGE · reshape loose earth</span></li>
+        <li><span class="name">Primal Savagery</span><span class="meta">XGE · 1d10 acid · melee</span></li>
+        <li><span class="name">Shape Water</span><span class="meta">XGE · water shaping</span></li>
+        <li><span class="name">Thunderclap</span><span class="meta">XGE · 1d6 thunder · 5 ft burst · CON</span></li>
+        <li><span class="name always">Chill Touch</span><span class="meta">free lv 2 · 1d8→2d8 necrotic · no regen</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 1ST LEVEL -->
+  <section>
+    <h2><span class="glyph">①</span> 1st-Level Spells</h2>
+    <div class="card">
+      <ul class="spell-list col-2">
+        <li><span class="name">Animal Friendship</span><span class="meta">action · 24 hr · WIS save</span></li>
+        <li><span class="name">Charm Person</span><span class="meta">action · 1 hr · WIS save</span></li>
+        <li><span class="name">Create or Destroy Water</span><span class="meta">action · 10 gal</span></li>
+        <li><span class="name">Cure Wounds</span><span class="meta">action · 1d8 + WIS</span></li>
+        <li><span class="name">Detect Magic</span><span class="meta">R · 10 min · C</span></li>
+        <li><span class="name">Detect Poison &amp; Disease</span><span class="meta">R · 10 min · C</span></li>
+        <li><span class="name">Entangle</span><span class="meta">action · 1 min · C · STR save · restrain</span></li>
+        <li><span class="name">Faerie Fire</span><span class="meta">action · 1 min · C · DEX save · adv on lit</span></li>
+        <li><span class="name">Fog Cloud</span><span class="meta">action · 1 hr · C · 20-ft sphere</span></li>
+        <li><span class="name">Goodberry</span><span class="meta">action · 10 berries · 1d4 HP · 24 hr</span></li>
+        <li><span class="name bonus">Healing Word</span><span class="meta">bonus · 1d4 + WIS · 60 ft range</span></li>
+        <li><span class="name">Jump</span><span class="meta">action · 1 min · ×3 jump distance</span></li>
+        <li><span class="name">Longstrider</span><span class="meta">action · 1 hr · +10 ft speed</span></li>
+        <li><span class="name">Purify Food &amp; Drink</span><span class="meta">R · action · 5-ft sphere</span></li>
+        <li><span class="name">Speak with Animals</span><span class="meta">R · 10 min</span></li>
+        <li><span class="name">Thunderwave</span><span class="meta">action · 2d8 thunder · 15-ft cube · push</span></li>
+        <li><span class="name">Absorb Elements</span><span class="meta">XGE · reaction · resist + ½ retaliate</span></li>
+        <li><span class="name">Beast Bond</span><span class="meta">XGE · 10 min · C · telepathic link</span></li>
+        <li><span class="name">Earth Tremor</span><span class="meta">XGE · 1d6 + prone · 10-ft burst · DEX</span></li>
+        <li><span class="name">Ice Knife</span><span class="meta">XGE · 1d10 piercing + 2d6 cold splash</span></li>
+        <li><span class="name">Snare</span><span class="meta">XGE · 1 min cast · ground trap · restrain</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 2ND LEVEL -->
+  <section>
+    <h2><span class="glyph">②</span> 2nd-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 3</span></h2>
+    <div class="card">
+      <ul class="spell-list col-2">
+        <li><span class="name always">Blindness/Deafness</span><span class="meta">always-prep · 1 min · CON save</span></li>
+        <li><span class="name always">Gentle Repose</span><span class="meta">R · always-prep · 10 days</span></li>
+        <li><span class="name">Animal Messenger</span><span class="meta">action · 24 hr · tiny beast courier</span></li>
+        <li><span class="name">Barkskin</span><span class="meta">action · 1 hr · C · AC 16 minimum</span></li>
+        <li><span class="name">Beast Sense</span><span class="meta">R · 1 hr · C · see through beast</span></li>
+        <li><span class="name">Darkvision</span><span class="meta">action · 8 hr · 60 ft</span></li>
+        <li><span class="name">Enhance Ability</span><span class="meta">action · 1 hr · C · adv on ability checks</span></li>
+        <li><span class="name">Enlarge/Reduce</span><span class="meta">action · 1 min · C · STR save</span></li>
+        <li><span class="name">Find Traps</span><span class="meta">action · instant · detect only</span></li>
+        <li><span class="name bonus">Flame Blade</span><span class="meta">bonus · 10 min · C · 3d6 fire melee</span></li>
+        <li><span class="name">Flaming Sphere</span><span class="meta">action · 1 min · C · 2d6 fire · DEX</span></li>
+        <li><span class="name">Gust of Wind</span><span class="meta">action · 1 min · C · 60-ft line</span></li>
+        <li><span class="name bonus">Heat Metal</span><span class="meta">bonus · 1 min · C · 2d8 fire + disadv</span></li>
+        <li><span class="name">Hold Person</span><span class="meta">action · 1 min · C · WIS save · paralyze</span></li>
+        <li><span class="name">Lesser Restoration</span><span class="meta">action · cure condition</span></li>
+        <li><span class="name">Locate Animals or Plants</span><span class="meta">R · instant</span></li>
+        <li><span class="name">Locate Object</span><span class="meta">action · 10 min · C · 1000 ft</span></li>
+        <li><span class="name">Moonbeam</span><span class="meta">action · 1 min · C · 2d10 radiant · CON</span></li>
+        <li><span class="name">Pass without Trace</span><span class="meta">action · 1 hr · C · +10 Stealth</span></li>
+        <li><span class="name">Protection from Poison</span><span class="meta">action · 1 hr · adv vs poisoned</span></li>
+        <li><span class="name">Spike Growth</span><span class="meta">action · 10 min · C · 20-ft sphere · 2d4/5 ft</span></li>
+        <li><span class="name">Summon Beast</span><span class="meta">TCE · action · 1 hr · C · spirit companion</span></li>
+        <li><span class="name">Dust Devil</span><span class="meta">XGE · action · 1 min · C · 5-ft cube · STR</span></li>
+        <li><span class="name">Earthbind</span><span class="meta">XGE · action · 1 min · C · pin to ground</span></li>
+        <li><span class="name bonus">Healing Spirit</span><span class="meta">XGE · bonus · 1 min · C · 1d6/turn heal</span></li>
+        <li><span class="name">Skywrite</span><span class="meta">XGE · R · 1 hr · C · sky message</span></li>
+        <li><span class="name">Warding Wind</span><span class="meta">XGE · action · 10 min · C · 10-ft aura</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3RD LEVEL -->
+  <section>
+    <h2><span class="glyph">③</span> 3rd-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 5</span></h2>
+    <div class="card">
+      <ul class="spell-list col-2">
+        <li><span class="name always">Animate Dead</span><span class="meta">always-prep · 1 min cast · 24 hr ctrl</span></li>
+        <li><span class="name always">Gaseous Form</span><span class="meta">always-prep · 1 hr · C · mist form</span></li>
+        <li><span class="name">Call Lightning</span><span class="meta">action · 10 min · C · 3d10 lightning</span></li>
+        <li><span class="name">Conjure Animals</span><span class="meta">action · 1 hr · C · summon CR ≤ 2 beasts</span></li>
+        <li><span class="name">Daylight</span><span class="meta">action · 1 hr · 60-ft bright sphere</span></li>
+        <li><span class="name">Dispel Magic</span><span class="meta">action · instant · end spells</span></li>
+        <li><span class="name">Meld into Stone</span><span class="meta">R · action · 8 hr · enter stone</span></li>
+        <li><span class="name">Plant Growth</span><span class="meta">action / 8 hr cast · difficult terrain</span></li>
+        <li><span class="name">Protection from Energy</span><span class="meta">action · 1 hr · C · resistance</span></li>
+        <li><span class="name">Sleet Storm</span><span class="meta">action · 1 min · C · 40-ft cyl · prone</span></li>
+        <li><span class="name">Speak with Plants</span><span class="meta">action · 10 min</span></li>
+        <li><span class="name">Water Breathing</span><span class="meta">R · action · 24 hr · 10 creatures</span></li>
+        <li><span class="name">Water Walk</span><span class="meta">R · action · 1 hr · 10 creatures</span></li>
+        <li><span class="name">Wind Wall</span><span class="meta">action · 1 min · C · 50×15 ft wall</span></li>
+        <li><span class="name">Erupting Earth</span><span class="meta">XGE · action · 3d12 bludg · 20-ft cube</span></li>
+        <li><span class="name">Flame Arrows</span><span class="meta">XGE · action · 1 hr · C · +1d6 fire</span></li>
+        <li><span class="name">Tidal Wave</span><span class="meta">XGE · action · 4d8 bludg + prone · 30×10</span></li>
+        <li><span class="name">Summon Fey</span><span class="meta">TCE · action · 1 hr · C · fey spirit</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4TH LEVEL -->
+  <section>
+    <h2><span class="glyph">④</span> 4th-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 7</span></h2>
+    <div class="card">
+      <ul class="spell-list col-2">
+        <li><span class="name always">Blight</span><span class="meta">always-prep · 8d8 necrotic · CON save</span></li>
+        <li><span class="name always">Confusion</span><span class="meta">always-prep · 1 min · C · 10-ft sphere</span></li>
+        <li><span class="name">Conjure Minor Elementals</span><span class="meta">1 min cast · 1 hr · C</span></li>
+        <li><span class="name">Conjure Woodland Beings</span><span class="meta">action · 1 hr · C · CR ≤ 1 fey</span></li>
+        <li><span class="name">Control Water</span><span class="meta">action · 10 min · C · redirect flow</span></li>
+        <li><span class="name">Dominate Beast</span><span class="meta">action · 1 min · C · WIS save</span></li>
+        <li><span class="name">Freedom of Movement</span><span class="meta">action · 1 hr · ignore restraints</span></li>
+        <li><span class="name">Giant Insect</span><span class="meta">action · 10 min · C · upsize bugs</span></li>
+        <li><span class="name bonus">Grasping Vine</span><span class="meta">bonus · 1 min · C · 20-ft pull · DEX</span></li>
+        <li><span class="name">Hallucinatory Terrain</span><span class="meta">10 min cast · 24 hr · visual illusion</span></li>
+        <li><span class="name">Ice Storm</span><span class="meta">action · 2d8+4d6 · 20-ft cyl · DEX</span></li>
+        <li><span class="name">Locate Creature</span><span class="meta">action · 1 hr · C · 1000 ft</span></li>
+        <li><span class="name">Polymorph</span><span class="meta">action · 1 hr · C · WIS save</span></li>
+        <li><span class="name">Stone Shape</span><span class="meta">action · sculpt 5-ft cube stone</span></li>
+        <li><span class="name">Stoneskin</span><span class="meta">action · 1 hr · C · resist nonmagical</span></li>
+        <li><span class="name">Wall of Fire</span><span class="meta">action · 1 min · C · 60-ft wall · DEX</span></li>
+        <li><span class="name">Charm Monster</span><span class="meta">XGE · action · 1 hr · WIS save</span></li>
+        <li><span class="name">Elemental Bane</span><span class="meta">XGE · action · 1 min · C · vulnerability</span></li>
+        <li><span class="name">Watery Sphere</span><span class="meta">XGE · action · 1 min · C · grapple STR</span></li>
+        <li><span class="name">Summon Elemental</span><span class="meta">TCE · action · 1 hr · C · elemental spirit</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5TH LEVEL -->
+  <section>
+    <h2><span class="glyph">⑤</span> 5th-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 9</span></h2>
+    <div class="card">
+      <ul class="spell-list col-2">
+        <li><span class="name always">Cloudkill</span><span class="meta">always-prep · 5d8 poison · 20-ft sphere · CON</span></li>
+        <li><span class="name always">Contagion</span><span class="meta">always-prep · disease + debuff on 3rd fail</span></li>
+        <li><span class="name">Antilife Shell</span><span class="meta">action · 1 hr · C · 10-ft aura · push</span></li>
+        <li><span class="name">Awaken</span><span class="meta">8 hr cast · awaken beast or plant · INT 10</span></li>
+        <li><span class="name">Commune with Nature</span><span class="meta">R · 1 min cast · 3 facts · 3-mi radius</span></li>
+        <li><span class="name">Conjure Elemental</span><span class="meta">1 min cast · 1 hr · C · CR ≤ 5</span></li>
+        <li><span class="name">Geas</span><span class="meta">1 min cast · 30 days · WIS save</span></li>
+        <li><span class="name bonus">Greater Restoration</span><span class="meta">action · cure exhaustion / charmed / petrified</span></li>
+        <li><span class="name">Insect Plague</span><span class="meta">action · 10 min · C · 20-ft sphere · CON</span></li>
+        <li><span class="name">Mass Cure Wounds</span><span class="meta">action · 3d8 + WIS · up to 6 targets</span></li>
+        <li><span class="name">Planar Binding</span><span class="meta">1 hr cast · 24 hr+ · bind celestial/fiend</span></li>
+        <li><span class="name">Reincarnate</span><span class="meta">1 hr cast · resurrect in new body</span></li>
+        <li><span class="name">Scrying</span><span class="meta">10 min cast · 10 min · C · WIS save</span></li>
+        <li><span class="name">Tree Stride</span><span class="meta">action · 1 min · C · teleport via trees</span></li>
+        <li><span class="name">Wall of Stone</span><span class="meta">action · 10 min · C · opaque stone panels</span></li>
+        <li><span class="name">Maelstrom</span><span class="meta">XGE · action · 1 min · C · 30-ft sphere · pull</span></li>
+        <li><span class="name">Transmute Rock</span><span class="meta">XGE · action · stone ↔ mud · permanent</span></li>
+        <li><span class="name">Wrath of Nature</span><span class="meta">XGE · action · 1 min · C · animate terrain</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 6TH LEVEL -->
+  <section>
+    <h2><span class="glyph">⑥</span> 6th-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 11</span></h2>
+    <div class="card">
+      <ul class="spell-list col-2">
+        <li><span class="name">Conjure Fey</span><span class="meta">action · 1 hr · C · CR ≤ 6 fey</span></li>
+        <li><span class="name">Find the Path</span><span class="meta">1 min cast · 24 hr · C · unerring route</span></li>
+        <li><span class="name">Heal</span><span class="meta">action · 70 HP + cure blind/deaf/disease</span></li>
+        <li><span class="name">Heroes' Feast</span><span class="meta">10 min cast · 24 hr · poison imm + 2d10 maxHP</span></li>
+        <li><span class="name">Move Earth</span><span class="meta">action · 2 hr · C · reshape terrain</span></li>
+        <li><span class="name">Sunbeam</span><span class="meta">action · 1 min · C · 6d8 radiant line · CON</span></li>
+        <li><span class="name">Transport via Plants</span><span class="meta">action · 1 round · plant gateway</span></li>
+        <li><span class="name">Wall of Thorns</span><span class="meta">action · 10 min · C · 60×10 ft wall · DEX</span></li>
+        <li><span class="name">Wind Walk</span><span class="meta">1 min cast · 8 hr · gaseous travel 300 ft</span></li>
+        <li><span class="name">Bones of the Earth</span><span class="meta">XGE · action · 6 stone pillars · up to 6 targets</span></li>
+        <li><span class="name">Druid Grove</span><span class="meta">XGE · 10 min cast · 24 hr ward</span></li>
+        <li><span class="name">Primordial Ward</span><span class="meta">XGE · action · 1 min · C · resist 5 dmg types</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7TH LEVEL -->
+  <section>
+    <h2><span class="glyph">⑦</span> 7th-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 13</span></h2>
+    <div class="card">
+      <ul class="spell-list col-2">
+        <li><span class="name">Fire Storm</span><span class="meta">action · 7d10 fire · arrange 10-ft cubes · DEX</span></li>
+        <li><span class="name">Mirage Arcane</span><span class="meta">10 min cast · 10 days · reshape 1-mile area</span></li>
+        <li><span class="name">Plane Shift</span><span class="meta">action · planar travel or banish · CHA save</span></li>
+        <li><span class="name">Regenerate</span><span class="meta">1 min cast · 1 hr · 1 HP/turn + regrow limbs</span></li>
+        <li><span class="name">Reverse Gravity</span><span class="meta">action · 1 min · C · 50-ft cyl · DEX save</span></li>
+        <li><span class="name">Whirlwind</span><span class="meta">XGE · action · 1 min · C · 10-ft cyl · STR</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8TH LEVEL -->
+  <section>
+    <h2><span class="glyph">⑧</span> 8th-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 15</span></h2>
+    <div class="card">
+      <ul class="spell-list col-2">
+        <li><span class="name">Animal Shapes</span><span class="meta">action · 24 hr · C · turn allies into beasts</span></li>
+        <li><span class="name">Antipathy/Sympathy</span><span class="meta">1 hr cast · 10 days · WIS save</span></li>
+        <li><span class="name">Control Weather</span><span class="meta">10 min cast · 8 hr · C · 5-mile radius</span></li>
+        <li><span class="name">Earthquake</span><span class="meta">action · 1 min · C · 100-ft radius · CON</span></li>
+        <li><span class="name">Feeblemind</span><span class="meta">action · INT 1 · no spells · INT save</span></li>
+        <li><span class="name">Sunburst</span><span class="meta">action · 12d6 radiant · 60-ft sphere · CON</span></li>
+        <li><span class="name">Tsunami</span><span class="meta">1 min cast · 6 rd · C · STR save · giant wave</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 9TH LEVEL -->
+  <section>
+    <h2><span class="glyph">⑨</span> 9th-Level Spells <span style="font-size:.7em;color:var(--spore);font-family:ui-monospace,monospace;">— available at druid lv 17</span></h2>
+    <div class="card">
+      <ul class="spell-list col-2">
+        <li><span class="name">Foresight</span><span class="meta">1 min cast · 8 hr · adv on everything</span></li>
+        <li><span class="name">Shapechange</span><span class="meta">action · 1 hr · C · any creature CR ≤ lv</span></li>
+        <li><span class="name">Storm of Vengeance</span><span class="meta">action · 1 min · C · 360-ft sphere</span></li>
+        <li><span class="name">True Resurrection</span><span class="meta">1 hr cast · raise dead at any time · new body</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════════════ QUICK SHEET ══════════════════ -->
+  <section id="sheet">
+    <h2><span class="glyph">📜</span> Quick Sheet</h2>
+    <div class="card">
+      <div class="grid-2">
+        <div>
+          <h3 style="margin-top:0;">Vitals</h3>
+          <p>
+            <strong>HP</strong> = 8 + (lv − 1) × 5 + CON mod × lv<br>
+            <strong>AC</strong> = 13–16 (leather/hide + DEX, no metal armour or shields)<br>
+            <em>Druids may not wear or wield metal armour, metal shields, or metal weapons.</em>
+          </p>
+          <h3>Spell Save DC by Level</h3>
+          <p class="mono" style="font-size:0.83rem;line-height:1.9;">
+            Lv 1  · WIS 17 · Prof +2 → DC 13<br>
+            Lv 4  · WIS 19 · Prof +2 → DC 14<br>
+            Lv 5  · WIS 19 · Prof +3 → DC 15<br>
+            Lv 8  · WIS 20 · Prof +3 → DC 16<br>
+            Lv 9  · WIS 20 · Prof +4 → DC 17<br>
+            Lv 13 · WIS 20 · Prof +5 → DC 18<br>
+            Lv 17 · WIS 20 · Prof +6 → DC 19
+          </p>
+        </div>
+        <div>
+          <h3 style="margin-top:0;">Resources per Rest</h3>
+          <p>
+            <strong>Short rest:</strong> Regain 2 Wild Shape uses<br>
+            <strong>Long rest:</strong> All spell slots + Fungal Infestation uses (WIS mod)<br>
+            Symbiotic Entity ends on WS or temp HP loss — not on a rest.
+          </p>
+          <h3>Starting Equipment</h3>
+          <p>
+            Wooden shield (AC +2) · scimitar (1d6 slashing) or Shillelagh'd wooden club ·
+            leather armour (AC 11 + DEX) · explorer's pack · druidic focus (gnarled wooden staff) ·
+            herbalism kit.
+          </p>
+          <h3>Druidic Language</h3>
+          <p style="margin-bottom:0;">Secret druid script — leave hidden grove messages.
+          Only other druids can read it. Useful for trail signs and warnings to fellow wardens.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================ SAVE / SHEET ============================ -->
-  <section>
-    <h2><span class="glyph">📜</span> Quick Sheet</h2>
-    <div class="card">
-      <p style="margin:0;">
-        <strong>Aldraxis Timberwalk</strong> — Wood Elf Druid, Circle of Spores ·
-        <strong>HP</strong> 8 + (lv-1)·5 + (CON × lv) ·
-        <strong>AC</strong> usually 13–15 (leather + DEX, no metal armour) ·
-        <strong>Save Prof</strong> INT, WIS ·
-        <strong>Skill Suggestions</strong> Perception (race) + Nature, Survival, Stealth, Insight, Medicine ·
-        <strong>Starting Equipment</strong> wooden shield, scimitar, leather armour, explorer's pack, druidic focus.
-      </p>
-    </div>
-  </section>
-
   <footer>
-    Compiled from <em>Player's Handbook</em>, <em>Xanathar's Guide to Everything</em>,
+    Compiled from <em>Player's Handbook</em> (2014), <em>Xanathar's Guide to Everything</em>,
     <em>Tasha's Cauldron of Everything</em>, and the Circle of Spores subclass
     (Tasha's reprint of <em>Guildmaster's Guide to Ravnica</em>).
     <br>
-    Spell-list current as of D&amp;D 5e (2014). For one-shot reference only — your DM's table is canon.
+    For one-shot reference only — your DM's table is canon.
+    D&amp;D rules content © Wizards of the Coast, used under the Fan Content Policy.
+    <br>
+    <a href="https://github.com/hardlygospel/aldraxis-timberwalk" style="color:var(--spore-glow);">github.com/hardlygospel/aldraxis-timberwalk</a>
+    &nbsp;·&nbsp; MIT License
   </footer>
 
-</div>
+</div><!-- /.wrap -->
+
+<script>
+/* Floating spore particles */
+(function () {
+  var c = document.getElementById('sporeContainer');
+  if (!c) return;
+  for (var i = 0; i < 20; i++) {
+    var d = document.createElement('div');
+    d.className = 'spore-dot';
+    var left  = 4 + Math.random() * 92;
+    var top   = 15 + Math.random() * 75;
+    var dur   = 5 + Math.random() * 7;
+    var delay = -(Math.random() * 10);
+    var drift = (Math.random() - 0.5) * 70;
+    var size  = 2 + Math.random() * 4;
+    d.style.cssText =
+      'left:' + left + '%;top:' + top + '%;' +
+      'width:' + size + 'px;height:' + size + 'px;' +
+      'animation-duration:' + dur + 's;' +
+      'animation-delay:' + delay + 's;' +
+      '--drift:' + drift + 'px;';
+    c.appendChild(d);
+  }
+})();
+
+/* Spell search filter */
+(function () {
+  var inp = document.getElementById('spellSearch');
+  if (!inp) return;
+  inp.addEventListener('input', function () {
+    var q = this.value.trim().toLowerCase();
+    document.querySelectorAll('.spell-list li').forEach(function (li) {
+      var n = li.querySelector('.name');
+      if (!n) return;
+      li.classList.toggle('spell-hidden', q.length > 0 && !n.textContent.toLowerCase().includes(q));
+    });
+  });
+})();
+
+/* Back-to-top button */
+(function () {
+  var btn = document.getElementById('backTop');
+  if (!btn) return;
+  window.addEventListener('scroll', function () {
+    btn.classList.toggle('visible', window.scrollY > 500);
+  }, { passive: true });
+})();
+
+/* Nav active-section highlight */
+(function () {
+  var links = Array.from(document.querySelectorAll('.topnav a[href^="#"]'));
+  var pairs = links.map(function (a) {
+    var id = a.getAttribute('href').slice(1);
+    return { el: document.getElementById(id), a: a };
+  }).filter(function (p) { return p.el; });
+  if (!pairs.length) return;
+
+  function update() {
+    var y = window.scrollY + 80;
+    var active = pairs[0];
+    pairs.forEach(function (p) { if (p.el.offsetTop <= y) active = p; });
+    links.forEach(function (a) { a.classList.remove('active'); });
+    active.a.classList.add('active');
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+</script>
 
 </body>
 </html>
